@@ -35,34 +35,46 @@ data = {
 }
 
 
+def assemble_user_data(row):
+    dob = datetime.strptime(row["DOB"], "%m/%d/%Y").strftime("%Y-%m-%d")
+    user = data.copy()
+    user.update(
+        {
+            "firstName": row["First Name"].strip().upper().strip(),
+            "lastName": row["Last Name"].strip().upper().strip(),
+            "medicareId": row["MBI"].replace("-", "").strip(),
+            "dob": dob,
+        }
+    )
+    print(user)
+    return user
+
+
+def missing_data(row):
+    return not (row["MBI"] and row["First Name"] and row["Last Name"] and row["DOB"])
+
+
 async def main():
 
     async with aiohttp.ClientSession() as session:
         with open("clients.csv", mode="r") as infile:
             for row in csv.DictReader(infile):
                 print("--------------------------------")
-                user = data.copy()
-                dob = datetime.strptime(row["DOB"], "%m/%d/%Y").strftime("%Y-%m-%d")
-                user.update(
-                    {
-                        "firstName": row["First Name"].strip().upper().strip(),
-                        "lastName": row["Last Name"].strip().upper().strip(),
-                        "medicareId": row["MBI"].replace("-", "").strip(),
-                        "dob": dob,
-                    }
-                )
-                print(user)
-                if user["medicareId"]:
-                    async with session.post(url, headers=headers, json=user) as response:
-                        print(response.status, response.headers["content-type"])
-                        JSON = await response.json()
-                        print("POST Response JSON:", JSON)
-                        fname = row["First Name"].replace(" ", "")
-                        lname = row["Last Name"].replace(" ", "")
-                        timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-                        filename = f"output/{fname}_{lname}_{timestamp}.json"
-                        with open(filename, "w") as f:
-                            json.dump(JSON, f, indent=4)
+                if missing_data(row):
+                    print("Skipping row due to missing data:", row)
+                    continue
+
+                user = assemble_user_data(row)
+                async with session.post(url, headers=headers, json=user) as response:
+                    print(response.status, response.headers["content-type"])
+                    JSON = await response.json()
+                    print("POST Response JSON:", JSON)
+                    fname = row["First Name"].replace(" ", "")
+                    lname = row["Last Name"].replace(" ", "")
+                    timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+                    filename = f"output/{fname}_{lname}_{timestamp}.json"
+                    with open(filename, "w") as f:
+                        json.dump(JSON, f, indent=4)
 
 
 if __name__ == "__main__":
