@@ -62,6 +62,14 @@ def make_cache_filename(row):
     return filename
 
 
+def make_noneqiv_filename(row):
+    fname = row["First Name"].replace(" ", "")
+    lname = row["Last Name"].replace(" ", "")
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+    filename = f"output/change/{fname}_{lname}_{timestamp}.json"
+    return filename
+
+
 def make_recent_filename(row):
     fname = row["First Name"].replace(" ", "")
     lname = row["Last Name"].replace(" ", "")
@@ -69,7 +77,7 @@ def make_recent_filename(row):
     return filename
 
 
-def compare_contents(response_data, recent_filename):
+def compare_contents(response_data, recent_filename, noneqiv_filename):
     recent_file_contents = None
     try:
         with open(recent_filename, "r") as f:
@@ -85,9 +93,12 @@ def compare_contents(response_data, recent_filename):
         recent_file_contents_copy = recent_file_contents.copy()
         response_data_copy.pop("transId", None)
         recent_file_contents_copy.pop("transId", None)
-        print("Same?", response_data_copy == recent_file_contents_copy)
-    else:
-        print("Same?", False)
+        contents_equivalent = response_data_copy == recent_file_contents_copy
+
+    if not contents_equivalent:
+        print("Writing to non-equivalent file:", noneqiv_filename)
+        with open(noneqiv_filename, "w") as f:
+            json.dump(recent_file_contents, f, indent=4)
 
 
 async def write_response_to_file(response, row):
@@ -96,8 +107,9 @@ async def write_response_to_file(response, row):
 
     cache_filename = make_cache_filename(row)
     recent_filename = make_recent_filename(row)
+    noneqiv_filename = make_noneqiv_filename(row)
 
-    compare_contents(response_data, recent_filename)
+    compare_contents(response_data, recent_filename, noneqiv_filename)
 
     print("Writing to file:", cache_filename)
     with open(cache_filename, "w") as f:

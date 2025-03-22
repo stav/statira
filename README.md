@@ -19,7 +19,10 @@
     [drwxr-xr-x stav     stav     4.0K]  .
     ├── [-rw-r--r-- stav     stav      781]  clients.csv
     ├── [-rw-r--r-- stav     stav      188]  config.ini
-    ├── [drwxr-xr-x stav     stav     4.0K]  output
+    ├── [drwxr-xr-x stav     stav      12K]  output
+    │   ├── [drwxr-xr-x stav     stav      20K]  cache
+    │   ├── [drwxr-xr-x stav     stav     4.0K]  change
+    │   └── [drwxr-xr-x stav     stav     4.0K]  recent
     ├── [-rw-r--r-- stav     stav      980]  README.md
     ├── [-rw-r--r-- stav     stav      793]  requirements.txt
     ├── [drwxr-xr-x stav     stav     4.0K]  statira
