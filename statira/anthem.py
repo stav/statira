@@ -53,21 +53,59 @@ def assemble_user_data(row):
 def missing_data(row):
     return not (row["MBI"] and row["First Name"] and row["Last Name"] and row["DOB"])
 
-def filename(row):
+
+def make_cache_filename(row):
     fname = row["First Name"].replace(" ", "")
     lname = row["Last Name"].replace(" ", "")
     timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-    filename = f"output/{fname}_{lname}_{timestamp}.json"
+    filename = f"output/cache/{fname}_{lname}_{timestamp}.json"
     return filename
 
+
+def make_recent_filename(row):
+    fname = row["First Name"].replace(" ", "")
+    lname = row["Last Name"].replace(" ", "")
+    filename = f"output/recent/{fname}_{lname}.json"
+    return filename
+
+
+def compare_contents(response_data, recent_filename):
+    recent_file_contents = None
+    try:
+        with open(recent_filename, "r") as f:
+            recent_file_contents = json.load(f)
+    except FileNotFoundError:
+        pass
+    except json.JSONDecodeError:
+        print("Error decoding JSON from file")
+
+    print("recent_file_contents:", type(recent_file_contents), recent_file_contents)
+    if recent_file_contents:
+        response_data_copy = response_data.copy()
+        recent_file_contents_copy = recent_file_contents.copy()
+        response_data_copy.pop("transId", None)
+        recent_file_contents_copy.pop("transId", None)
+        print("Same?", response_data_copy == recent_file_contents_copy)
+    else:
+        print("Same?", False)
+
+
 async def write_response_to_file(response, row):
-    print(response.status, response.headers["content-type"])
+    response_data = await response.json()
+    print("response_data:", type(response_data), response_data)
 
-    JSON = await response.json()
-    print("POST Response JSON:", JSON)
+    cache_filename = make_cache_filename(row)
+    recent_filename = make_recent_filename(row)
 
-    with open(filename(row), "w") as f:
-        json.dump(JSON, f, indent=4)
+    compare_contents(response_data, recent_filename)
+
+    print("Writing to file:", cache_filename)
+    with open(cache_filename, "w") as f:
+        json.dump(response_data, f, indent=4)
+
+    print("Writing to file:", recent_filename)
+    with open(recent_filename, "w") as f:
+        json.dump(response_data, f, indent=4)
 
 
 async def main():
@@ -83,12 +121,11 @@ async def main():
                 user = assemble_user_data(row)
 
                 async with session.post(url, headers=headers, json=user) as resp:
+                    print(resp.status, resp.headers["content-type"])
                     if resp.status == 200:
                         await write_response_to_file(resp, row)
                     else:
-                        print(
-                            "Request failed with status code", resp.status, resp.reason
-                        )
+                        print("Request failed", resp.reason)
 
 
 if __name__ == "__main__":
