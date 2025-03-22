@@ -54,6 +54,18 @@ def missing_data(row):
     return not (row["MBI"] and row["First Name"] and row["Last Name"] and row["DOB"])
 
 
+async def write_response_to_file(response, row):
+    print(response.status, response.headers["content-type"])
+    JSON = await response.json()
+    print("POST Response JSON:", JSON)
+    fname = row["First Name"].replace(" ", "")
+    lname = row["Last Name"].replace(" ", "")
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+    filename = f"output/{fname}_{lname}_{timestamp}.json"
+    with open(filename, "w") as f:
+        json.dump(JSON, f, indent=4)
+
+
 async def main():
 
     async with aiohttp.ClientSession() as session:
@@ -65,16 +77,14 @@ async def main():
                     continue
 
                 user = assemble_user_data(row)
-                async with session.post(url, headers=headers, json=user) as response:
-                    print(response.status, response.headers["content-type"])
-                    JSON = await response.json()
-                    print("POST Response JSON:", JSON)
-                    fname = row["First Name"].replace(" ", "")
-                    lname = row["Last Name"].replace(" ", "")
-                    timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-                    filename = f"output/{fname}_{lname}_{timestamp}.json"
-                    with open(filename, "w") as f:
-                        json.dump(JSON, f, indent=4)
+
+                async with session.post(url, headers=headers, json=user) as resp:
+                    if resp.status == 200:
+                        await write_response_to_file(resp, row)
+                    else:
+                        print(
+                            "Request failed with status code", resp.status, resp.reason
+                        )
 
 
 if __name__ == "__main__":
