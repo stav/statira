@@ -53,16 +53,20 @@ def assemble_user_data(row):
 def missing_data(row):
     return not (row["MBI"] and row["First Name"] and row["Last Name"] and row["DOB"])
 
-
-async def write_response_to_file(response, row):
-    print(response.status, response.headers["content-type"])
-    JSON = await response.json()
-    print("POST Response JSON:", JSON)
+def filename(row):
     fname = row["First Name"].replace(" ", "")
     lname = row["Last Name"].replace(" ", "")
     timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
     filename = f"output/{fname}_{lname}_{timestamp}.json"
-    with open(filename, "w") as f:
+    return filename
+
+async def write_response_to_file(response, row):
+    print(response.status, response.headers["content-type"])
+
+    JSON = await response.json()
+    print("POST Response JSON:", JSON)
+
+    with open(filename(row), "w") as f:
         json.dump(JSON, f, indent=4)
 
 
