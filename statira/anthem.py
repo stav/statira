@@ -87,6 +87,8 @@ def compare_contents(response_data, recent_filename, noneqiv_filename):
     except json.JSONDecodeError:
         print("Error decoding JSON from file")
 
+    contents_equivalent = None
+
     print("recent_file_contents:", type(recent_file_contents), recent_file_contents)
     if recent_file_contents:
         response_data_copy = response_data.copy()
