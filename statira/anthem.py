@@ -122,24 +122,26 @@ async def write_response_to_file(response, row):
         json.dump(response_data, f, indent=4)
 
 
-async def main():
+async def send(session, row):
+    user = assemble_user_data(row)
 
+    async with session.post(url, headers=headers, json=user) as resp:
+        print(resp.status, resp.headers["content-type"])
+        if resp.status == 200:
+            await write_response_to_file(resp, row)
+        else:
+            print("Request failed", resp.reason)
+
+
+async def main():
     async with aiohttp.ClientSession() as session:
         with open("clients.csv", mode="r") as infile:
             for row in csv.DictReader(infile):
                 print("--------------------------------")
                 if missing_data(row):
                     print("Skipping row due to missing data:", row)
-                    continue
-
-                user = assemble_user_data(row)
-
-                async with session.post(url, headers=headers, json=user) as resp:
-                    print(resp.status, resp.headers["content-type"])
-                    if resp.status == 200:
-                        await write_response_to_file(resp, row)
-                    else:
-                        print("Request failed", resp.reason)
+                else:
+                    await send(session, row)
 
 
 if __name__ == "__main__":
