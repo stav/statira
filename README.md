@@ -4,6 +4,8 @@
 
 ### Clone
 
+    $ git clone git@github.com:stav/statira.git
+
 ### Virtual Environment
 
     $ python  -m venv venv
