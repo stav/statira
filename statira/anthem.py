@@ -26,8 +26,11 @@ data = {
     # "lastName": "SMITH",
     # "dob": "1950-01-01",
     # "medicareId": "1XV9WC5XP29",
+    # "eligibility": "medicare|dsnp",
+    # "medicaidId": "",
+    # "state": "OH",
+    # "ssn": "",
     "proposedEffectiveDt": first_of_next_month,
-    "eligibility": "medicare",
     "eligibilitySource": "broker",
     "agentName": AGENT_NAME,
     "agentTIN": AGENT_TIN,
@@ -46,7 +49,20 @@ def assemble_user_data(row):
             "dob": dob,
         }
     )
+    if row.get("Medicaid"):
+        user["medicaidId"] = row["Medicaid"].strip()
+        user["eligibility"] = "dsnp"
+        user["state"] = "OH"
+    elif row.get("SSN"):
+        user["ssn"] = row["SSN"].strip().replace("-", "")
+        user["eligibility"] = "dsnp"
+        user["medicaidId"] = ""
+        user["state"] = "OH"
+    else:
+        user["eligibility"] = "medicare"
+
     print(user)
+
     return user
 
 
