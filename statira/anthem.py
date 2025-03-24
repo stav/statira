@@ -38,34 +38,6 @@ data = {
 }
 
 
-def assemble_user_data(row):
-    dob = datetime.strptime(row["DOB"], "%m/%d/%Y").strftime("%Y-%m-%d")
-    user = data.copy()
-    user.update(
-        {
-            "firstName": row["First Name"].strip().upper().strip(),
-            "lastName": row["Last Name"].strip().upper().strip(),
-            "medicareId": row["MBI"].replace("-", "").strip(),
-            "dob": dob,
-        }
-    )
-    if row.get("Medicaid"):
-        user["medicaidId"] = row["Medicaid"].strip()
-        user["eligibility"] = "dsnp"
-        user["state"] = "OH"
-    elif row.get("SSN"):
-        user["ssn"] = row["SSN"].strip().replace("-", "")
-        user["eligibility"] = "dsnp"
-        user["medicaidId"] = ""
-        user["state"] = "OH"
-    else:
-        user["eligibility"] = "medicare"
-
-    print(user)
-
-    return user
-
-
 def missing_data(row):
     return not (row["MBI"] and row["First Name"] and row["Last Name"] and row["DOB"])
 
@@ -136,6 +108,34 @@ async def write_response_to_file(response, row):
     print("Writing to file:", recent_filename)
     with open(recent_filename, "w") as f:
         json.dump(response_data, f, indent=4)
+
+
+def assemble_user_data(row):
+    dob = datetime.strptime(row["DOB"], "%m/%d/%Y").strftime("%Y-%m-%d")
+    user = data.copy()
+    user.update(
+        {
+            "firstName": row["First Name"].strip().upper().strip(),
+            "lastName": row["Last Name"].strip().upper().strip(),
+            "medicareId": row["MBI"].replace("-", "").strip(),
+            "dob": dob,
+        }
+    )
+    if row.get("Medicaid"):
+        user["medicaidId"] = row["Medicaid"].strip()
+        user["eligibility"] = "dsnp"
+        user["state"] = "OH"
+    elif row.get("SSN"):
+        user["ssn"] = row["SSN"].strip().replace("-", "")
+        user["eligibility"] = "dsnp"
+        user["medicaidId"] = ""
+        user["state"] = "OH"
+    else:
+        user["eligibility"] = "medicare"
+
+    print(user)
+
+    return user
 
 
 async def send(session, row):
