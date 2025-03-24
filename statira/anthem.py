@@ -1,3 +1,24 @@
+"""
+This module provides functionality to check Medicare and Medicaid eligibility
+for users via the Anthem API. It reads user data from a CSV file, formats the
+data, sends it to the API, and handles the response.
+
+If a Medicaid ID or an SSN is provided, it checks for DSNP eligibility.
+If only a Medicare ID is provided, it checks for Medicare eligibility.
+
+User interface: https://mproducer.anthem.com/mproducer/dsnpeligibilitycheck
+
+Functions:
+    missing_data(row): Checks if any required data is missing in the given row.
+    make_cache_filename(row): Generates a filename for caching the response data.
+    make_noneqiv_filename(row): Generates a filename for storing non-equivalent response data.
+    make_recent_filename(row): Generates a filename for storing the most recent response data.
+    compare_contents(response_data, recent_filename, noneqiv_filename): Compares the response data with the recent file contents and writes to a non-equivalent file if they differ.
+    write_response_to_file(response, row): Writes the API response data to cache, recent, and non-equivalent files.
+    assemble_user_data(row): Assembles user data from the CSV row into the required format for the API request.
+    send(session, row): Sends the user data to the API and handles the response.
+    main(): Main function to read the CSV file and process each row.
+"""
 import csv
 import json
 import aiohttp

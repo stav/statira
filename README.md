@@ -61,11 +61,11 @@ Jane,Smith,02/02/1954,456789123,,
 
 ```ini
 [AUTH]
-BEARER_TOKEN = "ey..."
+BEARER_TOKEN = ey...
 
 [AGENT]
-NAME = "Steven Almeroth"
-TIN = ".........."
+NAME = Steven Almeroth
+TIN = ..........
 ```
 
 ## Development
