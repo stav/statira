@@ -13,15 +13,16 @@
 
 ### Dependencies
 
-    $ pip install aiohttp[speedups]
+    $ pip install python-fasthtml aiohttp[speedups]
     $ pip install --upgrade pip
 
 ### Structure
 
     [drwxr-xr-x stav     stav     4.0K]  .
     ├── [-rw-r--r-- stav     stav      222]  anthem.sh
-    ├── [-rw-r--r-- stav     stav      981]  clients.csv
-    ├── [-rw-r--r-- stav     stav      239]  config.ini
+    ├── [-rw-r--r-- stav     stav      781]  clients.csv
+    ├── [-rw-r--r-- stav     stav      188]  config.ini
+    ├── [-rw-r--r-- stav     stav     132K]  llms-ctx.txt
     ├── [drwxr-xr-x stav     stav      12K]  output
     │   ├── [drwxr-xr-x stav     stav      32K]  cache
     │   ├── [drwxr-xr-x stav     stav     4.0K]  change

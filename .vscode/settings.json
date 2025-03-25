@@ -3,6 +3,7 @@
     "aiohttp",
     "drwxr",
     "dsnp",
+    "fasthtml",
     "idcard",
     "infile",
     "noneqiv",
