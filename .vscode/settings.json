@@ -1,6 +1,7 @@
 {
   "cSpell.words": [
     "aiohttp",
+    "chardet",
     "drwxr",
     "dsnp",
     "enctype",
@@ -8,6 +9,7 @@
     "idcard",
     "infile",
     "noneqiv",
+    "onchange",
     "Referer",
     "statira",
     "venv"

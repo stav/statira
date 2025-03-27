@@ -13,7 +13,7 @@
 
 ### Dependencies
 
-    $ pip install python-fasthtml aiohttp[speedups]
+    $ pip install python-fasthtml chardet aiohttp[speedups]
     $ pip install --upgrade pip
 
 ### Structure
@@ -77,8 +77,6 @@ TIN = ..........
 When writing your code, we recommend enabling Python's [development mode][1] (python -X dev).
 
     $ python -X dev anthem.py
-
-### Production
 
 
 [1]: https://docs.python.org/3/library/devmode.html
