@@ -30,7 +30,8 @@ serve()
 @rt
 def index():
     return Titled(
-        "Hello World!",
+        "Medicaid Eligibility Checker",
+        H3("Upload CSV file"),
         Form(
             Input(
                 type="file",
@@ -73,19 +74,18 @@ def parse_csv(file):
     # Analyze CSV structure
     csv_reader = csv.reader(StringIO(content))
     headers = next(csv_reader, None)  # Extract headers
-    sample_rows = [row for _, row in zip(range(5), csv_reader)]  # Extract sample rows
+    sample_rows = [row for _, row in zip(range(5), csv_reader)]
     csv_reader = csv.reader(StringIO(content))  # Reset csv_reader
-    line_count = sum(1 for _ in csv_reader)  # Count lines
+    line_count = sum(1 for _ in csv_reader)
     column_count = len(headers) if headers else 0
 
     return Dl(
-
         # Name
         Dt("File uploaded successfully:"),
         Dd(Code(file.filename)),
 
         # Type
-        Dt("Content type: "),
+        Dt("Content type:"),
         Dd(Code(file.content_type)),
 
         # Size
