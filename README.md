@@ -76,7 +76,11 @@ TIN = ..........
 
 When writing your code, we recommend enabling Python's [development mode][1] (python -X dev).
 
-    $ python -X dev anthem.py
+    $ python -X dev -m statira.sserver.anthem
+
+## Client
+
+    $ python statira/main.py
 
 
 [1]: https://docs.python.org/3/library/devmode.html
