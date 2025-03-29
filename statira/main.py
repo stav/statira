@@ -69,7 +69,7 @@ def parse_csv(file):
 
     # Reset file pointer and read content
     file.file.seek(0)
-    content = file.file.read().decode(encoding, errors="replace")
+    content: str = file.file.read().decode(encoding, errors="replace")
 
     # Analyze CSV structure
     csv_reader = csv.reader(StringIO(content))
@@ -79,43 +79,37 @@ def parse_csv(file):
     line_count = sum(1 for _ in csv_reader)
     column_count = len(headers) if headers else 0
 
-    return Dl(
+    display = Dl(
         # Name
         Dt("File uploaded successfully:"),
         Dd(Code(file.filename)),
-
         # Type
         Dt("Content type:"),
         Dd(Code(file.content_type)),
-
         # Size
         Dt("Size: (bytes)"),
         Dd(Code(file.size)),
-
         # Encoding
         Dt("Detected Encoding:"),
         Dd(Code(encoding)),
-
         # Line Count
         Dt("Total Lines:"),
         Dd(Code(line_count)),
-
         # Column Count
         Dt("Number of Columns:"),
         Dd(Code(column_count)),
-
         # Headers
         Dt("Headers:"),
         Dd(Code(headers if headers else "No headers found")),
-
         # Sample Rows
         Dt("Sample Rows:"),
         Dd(Code(sample_rows)),
-
         # Preview
         Dt("Raw Preview:"),
         Dd(Pre(preview.decode(encoding, errors="replace"))),
     )
+
+    return content, display
 
 
 @rt("/upload", methods=["POST"])
@@ -124,8 +118,8 @@ async def upload(request: Request):
     file = form.get("file")
     if not file:
         return "No file provided."
-    if not file.filename.endswith(".csv"):
-        return "File name must end with 'csv' extension."
+    # if not file.filename.lower().endswith(".csv"):
+    #     return "File name must end with 'csv' extension."
     if file.content_type != "text/csv":
         return "Invalid content type. Only CSV files are allowed."
     if file.size > 10 * 1024 * 1024:
@@ -136,9 +130,16 @@ async def upload(request: Request):
     messages = []
 
     if form.get("parse"):
-        messages.append(parse_csv(file))
+        content, display = parse_csv(file)
+        messages.append(display)
 
-    if form.get("anthem"):
-        messages.append(Div(await anthem.main()))
+        if form.get("anthem"):
+            messages.append(await anthem.main(content))
+
+    else:
+        if form.get("anthem"):
+            messages.append(
+                "Anthem eligibility check is not available without parsing the file."
+            )
 
     return messages

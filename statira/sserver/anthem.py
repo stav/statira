@@ -19,11 +19,13 @@ Functions:
     send(session, row): Sends the user data to the API and handles the response.
     main(): Main function to read the CSV file and process each row.
 """
+
 import csv
 import json
 import aiohttp
 import asyncio
 
+from io import StringIO
 from datetime import datetime, timedelta
 
 from .config import BEARER_TOKEN, AGENT_NAME, AGENT_TIN
@@ -60,7 +62,12 @@ data = {
 
 
 def missing_data(row):
-    return not (row["MBI"] and row["First Name"] and row["Last Name"] and row["DOB"])
+    return not (
+        row.get("MBI")
+        and row.get("First Name")
+        and row.get("Last Name")
+        and row.get("DOB")
+    )
 
 
 def make_cache_filename(row):
@@ -170,15 +177,30 @@ async def send(session, row):
             print("Request failed", resp.reason)
 
 
-async def main():
-    async with aiohttp.ClientSession() as session:
+def get_csv(content: str):
+    if content is None:
         with open("clients.csv", mode="r") as infile:
-            for row in csv.DictReader(infile):
-                print("--------------------------------")
-                if missing_data(row):
-                    print("Skipping row due to missing data:", row)
-                else:
-                    await send(session, row)
+            content = infile
+
+    return StringIO(content)
+
+
+async def main(content: str = None):
+    async with aiohttp.ClientSession() as session:
+        print("=" * 20)
+        p = r = 0
+
+        for row in csv.DictReader(get_csv(content)):
+            r += 1
+            print("-" * 20, r)
+            if missing_data(row):
+                print("Skipping row due to missing data:", row)
+            else:
+                await send(session, row)
+                p += 1
+
+    print("=" * 20)
+    print("Read", r, f"row{'' if r == 1 else 's'}, Processed:", p)
 
 
 if __name__ == "__main__":
