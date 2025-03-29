@@ -12,6 +12,7 @@ from fasthtml.common import (
     Dt,
     fast_app,
     Form,
+    H3,
     Input,
     Label,
     P,
@@ -107,9 +108,31 @@ def parse_csv(file):
         # Preview
         Dt("Raw Preview:"),
         Dd(Pre(preview.decode(encoding, errors="replace"))),
+        # Style Dl
+        style="border: 1px solid #ccc; padding: 10px; border-radius: 8px;",
     )
 
     return content, display
+
+
+def parse_display(datas):
+    return Div(
+        *[
+            Div(
+                H3(f"Record {i}:"),
+                Code(f"{user}"),
+                Dl(
+                    *[
+                        (Dt(key), Dd(Code(value)))
+                        for key, value in data.items()
+                        if value
+                    ]
+                ),
+                style="border: 1px solid #ccc; margin-bottom: 10px; padding: 10px; border-radius: 8px;",
+            )
+            for i, (user, data) in enumerate(datas, start=1)
+        ]
+    )
 
 
 @rt("/upload", methods=["POST"])
@@ -134,7 +157,9 @@ async def upload(request: Request):
         messages.append(display)
 
         if form.get("anthem"):
-            messages.append(await anthem.main(content))
+            datas = [data async for data in anthem.main(content)]
+            json_display = parse_display(datas)
+            messages.append(json_display)
 
     else:
         if form.get("anthem"):

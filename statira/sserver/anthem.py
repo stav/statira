@@ -119,8 +119,7 @@ def compare_contents(response_data, recent_filename, noneqiv_filename):
             json.dump(recent_file_contents, f, indent=4)
 
 
-async def write_response_to_file(response, row):
-    response_data = await response.json()
+async def write_response_to_file(response_data, row):
     print("response_data:", type(response_data), response_data)
 
     cache_filename = make_cache_filename(row)
@@ -168,13 +167,17 @@ def assemble_user_data(row):
 
 async def send(session, row):
     user = assemble_user_data(row)
+    response_data: str = None
 
     async with session.post(url, headers=headers, json=user) as resp:
         print(resp.status, resp.headers["content-type"])
         if resp.status == 200:
-            await write_response_to_file(resp, row)
+            response_data = await resp.json()
+            await write_response_to_file(response_data, row)
         else:
             print("Request failed", resp.reason)
+
+    return user, response_data
 
 
 def get_csv(content: str):
@@ -196,7 +199,8 @@ async def main(content: str = None):
             if missing_data(row):
                 print("Skipping row due to missing data:", row)
             else:
-                await send(session, row)
+                user, data = await send(session, row)
+                yield user, data
                 p += 1
 
     print("=" * 20)
