@@ -35,8 +35,8 @@ def parse_csv(file):
         # Close Button
         Div(
             "X",
-            title="Close",
-            style="position: absolute; top: 5px; right: 10px; cursor: pointer; font-size: 18px; color: white; background-color: rgba(255, 0, 0, 0.3); border: none; border-radius: 4px; padding: 8px 14px; text-align: center;",
+            title="Clear",
+            style="position: absolute; top: 12px; right: 10px; cursor: pointer; font-size: 18px; color: white; border: 1px solid white; border-radius: 4px; padding: 8px 14px; text-align: center;",
             onclick="this.parentElement.outerHTML = '';",
         ),
         # Name
