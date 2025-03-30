@@ -183,12 +183,12 @@ async def send(session, row):
 def get_csv(content: str):
     if content is None:
         with open("clients.csv", mode="r") as infile:
-            content = infile
+            content = infile.read()
 
     return StringIO(content)
 
 
-async def main(content: str = None):
+async def start(content: str = None):
     async with aiohttp.ClientSession() as session:
         print("=" * 20)
         p = r = 0
@@ -205,6 +205,10 @@ async def main(content: str = None):
 
     print("=" * 20)
     print("Read", r, f"row{'' if r == 1 else 's'}, Processed:", p)
+
+
+async def main(content: str = None):
+    return [m async for m in start(content)]
 
 
 if __name__ == "__main__":

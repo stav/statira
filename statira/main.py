@@ -157,7 +157,8 @@ async def upload(request: Request):
         messages.append(display)
 
         if form.get("anthem"):
-            datas = [data async for data in anthem.main(content)]
+            process = anthem.start(content)
+            datas = [data async for data in process]
             json_display = parse_display(datas)
             messages.append(json_display)
 
