@@ -32,6 +32,13 @@ def parse_csv(file):
     column_count = len(headers) if headers else 0
 
     display = Dl(
+        # Close Button
+        Div(
+            "X",
+            title="Close",
+            style="position: absolute; top: 5px; right: 10px; cursor: pointer; font-size: 18px; color: white; background-color: rgba(255, 0, 0, 0.3); border: none; border-radius: 4px; padding: 8px 14px; text-align: center;",
+            onclick="this.parentElement.outerHTML = '';",
+        ),
         # Name
         Dt("File uploaded successfully:"),
         Dd(Code(file.filename)),
@@ -60,7 +67,7 @@ def parse_csv(file):
         Dt("Raw Preview:"),
         Dd(Pre(preview.decode(encoding, errors="replace"))),
         # Style Dl
-        style="border: 1px solid #ccc; padding: 10px; border-radius: 8px;",
+        style="border: 1px solid #ccc; padding: 10px; border-radius: 8px; position: relative;",
     )
 
     return content, display
