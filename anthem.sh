@@ -1,6 +1,6 @@
 echo ==========================================================================
 date
-cd /srv/statira
+cd /srv/agency.medstar.statira/statira
 pwd
 ls -l venv/bin/activate
 . venv/bin/activate

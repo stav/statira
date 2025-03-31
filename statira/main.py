@@ -1,8 +1,8 @@
 from starlette.requests import Request
 from fasthtml.common import fast_app, serve, Link, MarkdownJS
 
-import index
-import upload
+from index import page
+from upload import post
 
 dev_config = {
     "live": True,
@@ -19,11 +19,11 @@ app, rt = fast_app(**dev_config)
 serve()
 
 
-@rt("/")
-def _():
-    return index.page()
+@rt
+def index():
+    return page()
 
 
 @rt("/upload", methods=["POST"])
-async def _(request: Request):
-    return await upload.post(request)
+async def upload(request: Request):
+    return await post(request)

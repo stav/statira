@@ -13,43 +13,53 @@
 
 ### Dependencies
 
-    $ pip install python-fasthtml chardet aiohttp[speedups]
     $ pip install --upgrade pip
+    $ pip install -r requirements.txt
 
 ### Structure
 
     [drwxr-xr-x stav     stav     4.0K]  .
-    ├── [-rw-r--r-- stav     stav      222]  anthem.sh
-    ├── [-rw-r--r-- stav     stav      781]  clients.csv
-    ├── [-rw-r--r-- stav     stav      188]  config.ini
+    ├── [-rwxr-xr-x stav     stav      245]  anthem.sh
+    ├── [-rw-r--r-- stav     stav       94]  clients.csv
+    ├── [-rw-r--r-- stav     stav      261]  config.ini
     ├── [-rw-r--r-- stav     stav     132K]  llms-ctx.txt
     ├── [drwxr-xr-x stav     stav      12K]  output
-    │   ├── [drwxr-xr-x stav     stav      32K]  cache
-    │   ├── [drwxr-xr-x stav     stav     4.0K]  change
-    │   └── [drwxr-xr-x stav     stav     4.0K]  recent
-    ├── [-rw-r--r-- stav     stav     2.2K]  README.md
+    │   ├── [drwxr-xr-x stav     stav      68K]  cache
+    │   ├── [drwxr-xr-x stav     stav     4.0K]  change
+    │   └── [drwxr-xr-x stav     stav     4.0K]  recent
+    ├── [-rw-r--r-- stav     stav     2.4K]  README.md
     ├── [-rw-r--r-- stav     stav      730]  requirements.txt
     ├── [drwxr-xr-x stav     stav     4.0K]  statira
-    │   └── [drwxr-xr-x stav     stav     4.0K]  sserver
-    │       ├── [-rw-r--r-- stav     stav     6.4K]  anthem.py
-    │       └── [-rw-r--r-- stav     stav      407]  config.py
+    │   ├── [-rw-r--r-- stav     stav     7.3K]  anthem.py
+    │   ├── [-rw-r--r-- stav     stav      401]  config.py
+    │   ├── [-rw-r--r-- stav     stav     2.7K]  index.py
+    │   ├── [-rw-r--r-- stav     stav      504]  main.py
+    │   ├── [-rw-r--r-- stav     stav     3.0K]  parse.py
+    │   ├── [drwxr-xr-x stav     stav     4.0K]  static
+    │   └── [-rw-r--r-- stav     stav     1.9K]  upload.py
     └── [drwxr-xr-x stav     stav     4.0K]  venv
-
 
 #### Files
 
-- `clients.csv`: List of clients
-- `config.ini`: Configuration file for authentication and agent details.
+- `anthem.sh`: Shell script for running the application.
+- `clients.csv`: List of clients with details such as name, DOB, MBI, SSN, and Medicaid ID.
+- `config.ini`: Configuration file containing authentication and agent details.
+- `llms-ctx.txt`: Context file for language model processing.
 - `output/`: Directory for storing output files.
-  - `cache/`: Server responses.
-  - `change/`: Server responses that differ from previous responses.
-  - `recent/`: The most recent server response.
-- `README.md`: This file.
-- `requirements.txt`: List of Python dependencies.
-- `statira/`: Directory containing the main application code.
-  - `anthem.py`: Main script to run the application.
-  - `config.py`: Configuration handling.
-- `venv/`: Virtual environment directory.
+    - `cache/`: Cached server responses.
+    - `change/`: Server responses that differ from previous responses.
+    - `recent/`: The most recent server response.
+- `README.md`: Documentation file for the project.
+- `requirements.txt`: Python dependencies required for the project.
+- `statira/`: Main application directory.
+    - `anthem.py`: Main script to run the application.
+    - `config.py`: Handles configuration settings.
+    - `index.py`: Home page for the client user interface.
+    - `main.py`: Entry point for client operations.
+    - `parse.py`: Parsing logic for input data.
+    - `static/`: Directory for static files.
+    - `upload.py`: Handles file uploads.
+- `venv/`: Virtual environment directory for Python dependencies.
 
 ##### clients.csv
 
@@ -76,7 +86,7 @@ TIN = ..........
 
 When writing your code, we recommend enabling Python's [development mode][1] (python -X dev).
 
-    $ python -X dev -m statira.sserver.anthem
+    $ python -X dev statira/anthem.py
 
 ## Client
 

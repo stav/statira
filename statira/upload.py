@@ -3,8 +3,8 @@ import io
 from starlette.requests import Request
 from starlette.datastructures import UploadFile
 
+from anthem import start
 from parse import parse_csv, parse_display, parse_message
-from sserver import anthem
 
 
 async def post(request: Request):
@@ -33,7 +33,7 @@ async def post(request: Request):
         messages.append(display)
 
         if form.get("anthem"):
-            process = anthem.start(content)
+            process = start(content)
             # datas is a list of dicts from a comprehension that drains the start generator
             datas = [p async for p in process]
             # Messages should be displayed at the top (under the meta)

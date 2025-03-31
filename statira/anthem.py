@@ -30,7 +30,7 @@ import asyncio
 from io import StringIO
 from datetime import datetime, timedelta
 
-from .config import BEARER_TOKEN, AGENT_NAME, AGENT_TIN
+from config import BEARER_TOKEN, AGENT_NAME, AGENT_TIN
 
 
 url = "https://mproducer.anthem.com/mproducer/accessgateway/geteligibility"
