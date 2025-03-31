@@ -6,8 +6,6 @@ from upload import post
 from config import PORT
 
 dev_config = {
-    "live": True,
-    "debug": True,
     "hdrs": [
         Link(rel="icon", href="/static/favicon.ico"),
         MarkdownJS(),
