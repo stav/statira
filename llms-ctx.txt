@@ -36,30 +36,30 @@ serve()
 
 </div>
 
-Line 1  
+Line 1
 We import what we need for rapid development! A carefully-curated set of
 FastHTML functions and other Python objects is brought into our global
 namespace for convenience.
 
-Line 3  
+Line 3
 We instantiate a FastHTML app with the `fast_app()` utility function.
 This provides a number of really useful defaults that we’ll take
 advantage of later in the tutorial.
 
-Line 5  
+Line 5
 We use the `rt()` decorator to tell FastHTML what to return when a user
 visits `/` in their browser.
 
-Line 6  
+Line 6
 We connect this route to HTTP GET requests by defining a view function
 called `get()`.
 
-Line 7  
+Line 7
 A tree of Python function calls that return all the HTML required to
 write a properly formed web page. You’ll soon see the power of this
 approach.
 
-Line 9  
+Line 9
 The [`serve()`](https://docs.fastht.ml/api/core.html#serve) utility
 configures and runs FastHTML using a library called `uvicorn`.
 
@@ -108,7 +108,7 @@ of your JS or JSON like this:
 
 ``` python
 import json
-from fasthtml.common import * 
+from fasthtml.common import *
 
 app, rt = fast_app(hdrs=(Script(src="https://cdn.plot.ly/plotly-2.32.0.min.js"),))
 
@@ -148,10 +148,10 @@ def get():
 serve()
 ```
 
-Line 3  
+Line 3
 `debug=True` sets debug mode on.
 
-Line 7  
+Line 7
 Python throws an error when it tries to divide an integer by zero.
 
 ## Routing
@@ -164,7 +164,7 @@ URLs, with extra features:
 **main.py**
 
 ``` python
-from fasthtml.common import * 
+from fasthtml.common import *
 
 app, rt = fast_app()
 
@@ -181,11 +181,11 @@ serve()
 
 </div>
 
-Line 5  
+Line 5
 The “/” URL on line 5 is the home of a project. This would be accessed
 at [127.0.0.1:5001](http://127.0.0.1:5001).
 
-Line 9  
+Line 9
 “/hello” URL on line 9 will be found by the project if the user visits
 [127.0.0.1:5001/hello](http://127.0.0.1:5001/hello).
 
@@ -216,7 +216,7 @@ example:
 **main.py**
 
 ``` python
-from fasthtml.common import * 
+from fasthtml.common import *
 
 app, rt = fast_app()
 
@@ -229,14 +229,14 @@ serve()
 
 </div>
 
-Line 5  
+Line 5
 We specify two variable names, `name` and `age`.
 
-Line 6  
+Line 6
 We define two function arguments named identically to the variables. You
 will note that we specify the Python types to be passed.
 
-Line 7  
+Line 7
 We use these functions in our project.
 
 Try it out by going to this address:
@@ -281,15 +281,15 @@ DELETE. The way FastHTML handles this is by changing the function name.
 **main.py**
 
 ``` python
-from fasthtml.common import * 
+from fasthtml.common import *
 
 app, rt = fast_app()
 
-@rt("/")  
+@rt("/")
 def get():
   return Titled("HTTP GET", P("Handle GET"))
 
-@rt("/")  
+@rt("/")
 def post():
   return Titled("HTTP POST", P("Handle POST"))
 
@@ -298,11 +298,11 @@ serve()
 
 </div>
 
-Line 6  
+Line 6
 On line 6 because the `get()` function name is used, this will handle
 HTTP GETs going to the `/` URI.
 
-Line 10  
+Line 10
 On line 10 because the `post()` function name is used, this will handle
 HTTP POSTs going to the `/` URI.
 
@@ -317,7 +317,7 @@ default of Pico CSS.
 **main.py**
 
 ``` python
-from fasthtml.common import * 
+from fasthtml.common import *
 
 app, rt = fast_app(
     pico=False,
@@ -338,13 +338,13 @@ serve()
 
 </div>
 
-Line 4  
+Line 4
 By setting `pico` to `False`, FastHTML will not include `pico.min.css`.
 
-Line 7  
+Line 7
 This will generate an HTML `<link>` tag for sourcing the css for Sakura.
 
-Line 8  
+Line 8
 If you want an inline styles, the
 [`Style()`](https://docs.fastht.ml/api/xtend.html#style) function will
 put the result into the HTML.
@@ -374,7 +374,7 @@ place. In the example below, we call images from a directory called
 
 ``` python
 @rt("/{fname:path}.{ext:static}")
-async def get(fname:str, ext:str): 
+async def get(fname:str, ext:str):
     return FileResponse(f'public/{fname}.{ext}')
 ```
 
@@ -511,12 +511,12 @@ from dataclasses import dataclass
 class Hero:
     title: str
     statement: str
-    
+
     def __ft__(self):
         """ The __ft__ method renders the dataclass at runtime."""
         return Div(H1(self.title),P(self.statement), cls="hero")
-    
-# usage example
+
+# usage example
 Main(
     Hero("Hello World", "This is a hero statement")
 )
@@ -549,7 +549,7 @@ client = TestClient(app)
 # Usage example
 @rt("/")
 def get():
-    return Titled("FastHTML is awesome", 
+    return Titled("FastHTML is awesome",
         P("The fastest way to create web apps in Python"))
 
 print(client.get("/").text)
@@ -657,10 +657,10 @@ def profile(email:str):
 print(client.get(f"/profile/john@example.com").text)
 ```
 
-Line 3  
+Line 3
 Fetch the profile using the profile table’s `email` primary key
 
-Line 4  
+Line 4
 Fill the form for display.
 
 
@@ -688,18 +688,18 @@ new_data = dict(email='john@example.com', phone='7654321', age=25)
 print(client.post("/profile", data=new_data).text)
 ```
 
-Line 2  
+Line 2
 We use the `Profile` dataclass definition to set the type for the
 incoming `profile` content. This validates the field types for the
 incoming data
 
-Line 3  
+Line 3
 Taking our validated data, we updated the profiles table
 
-Line 4  
+Line 4
 We redirect the user back to their profile view
 
-Line 7  
+Line 7
 The display is of the profile form view showing the changes in data.
 
 
@@ -723,7 +723,7 @@ components) - If you pass a string, it will be escaped - On other python
 objects, `str()` will be called
 
 As a consequence, if you want to include plain HTML tags directly into
-e.g. a `Div()` they will get escaped by default (as a security measure
+e.g. a `Div()` they will get escaped by default (as a security measure
 to avoid code injections). This can be avoided by using `NotStr()`, a
 convenient way to reuse python code that returns already HTML. If you
 use pandas, you can use `pandas.DataFrame.to_html()` to get a nice
@@ -740,8 +740,8 @@ from dataclasses import dataclass
 class Hero:
     title: str
     statement: str
-        
-# rendering the dataclass with the default method
+
+# rendering the dataclass with the default method
 Main(
     Hero("<h1>Hello World</h1>", "This is a hero statement")
 )
@@ -904,14 +904,14 @@ def get(session):
     return Titled("I like toast")
 ```
 
-Line 1  
+Line 1
 `setup_toasts` is a helper function that adds toast dependencies.
 Usually this would be declared right after `fast_app()`
 
-Line 4  
+Line 4
 Toasts require sessions
 
-Line 11  
+Line 11
 Views with Toasts must return FT or FtResponse components.
 
 💡 `setup_toasts` takes a `duration` input that allows you to specify
@@ -937,7 +937,7 @@ def user_auth_before(req, sess):
     # The `auth` key in the request scope is automatically provided
     # to any handler which requests it, and can not be injected
     # by the user using query params, cookies, etc, so it should
-    # be secure to use.    
+    # be secure to use.
     auth = req.scope['auth'] = sess.get('auth', None)
     # If the session key is not there, it redirects to the login page.
     if not auth: return login_redir
@@ -999,39 +999,39 @@ async def number_generator():
 async def get(): return EventStream(number_generator())
 ```
 
-Line 5  
+Line 5
 Import the HTMX SSE extension
 
-Line 12  
+Line 12
 Tell HTMX to load the SSE extension
 
-Line 13  
+Line 13
 Look at the `/number-stream` endpoint for SSE content
 
-Line 14  
+Line 14
 When new items come in from the SSE endpoint, add them at the end of the
 current content within the div. If they go beyond the screen, scroll
 downwards
 
-Line 15  
+Line 15
 Specify the name of the event. FastHTML’s default event name is
 “message”. Only change if you have more than one call to SSE endpoints
 within a view
 
-Line 17  
+Line 17
 Set up the asyncio event loop
 
-Line 19  
+Line 19
 Don’t forget to make this an `async` function!
 
-Line 20  
+Line 20
 Iterate through the asyncio event loop
 
-Line 22  
+Line 22
 We yield the data. Data ideally should be comprised of FT components as
 that plugs nicely into HTMX in the browser
 
-Line 26  
+Line 26
 The endpoint view needs to be an async function that returns a
 [`EventStream`](https://docs.fastht.ml/api/core.html#eventstream)
 
@@ -1040,7 +1040,7 @@ The endpoint view needs to be an async function that returns a
 With websockets we can have bi-directional communications between a
 browser and client. Websockets are useful for things like chat and
 certain types of games. While websockets can be used for single
-direction messages from the server (i.e. telling users that a process is
+direction messages from the server (i.e. telling users that a process is
 finished), that task is arguably better suited for SSE.
 
 FastHTML provides useful tools for adding websockets to your pages.
@@ -1075,15 +1075,15 @@ async def ws(msg:str, send):
     return Div('Goodbye ' + msg, id="notifications"), mk_inp()
 ```
 
-Line 4  
+Line 4
 To use websockets in FastHTML, you must instantiate the app with `exts`
 set to ‘ws’
 
-Line 6  
+Line 6
 As we want to use websockets to reset the form, we define the `mk_input`
 function that can be called from multiple locations
 
-Line 12  
+Line 12
 We create the form and mark it with the `ws_send` attribute, which is
 documented here in the [HTMX websocket
 specification](https://v1.htmx.org/extensions/web-sockets/). This tells
@@ -1091,45 +1091,45 @@ HTMX to send a message to the nearest websocket based on the trigger for
 the form element, which for forms is pressing the `enter` key, an action
 considered to be a form submission
 
-Line 13  
+Line 13
 This is where the HTMX extension is loaded (`hx_ext='ws'`) and the
 nearest websocket is defined (`ws_connect='/ws'`)
 
-Line 16  
+Line 16
 When a websocket first connects we can optionally have it call a
 function that accepts a `send` argument. The `send` argument will push a
 message to the browser.
 
-Line 18  
+Line 18
 Here we use the `send` function that was passed into the `on_connect`
 function to send a `Div` with an `id` of `notifications` that HTMX
 assigns to the element in the page that already has an `id` of
 `notifications`
 
-Line 20  
+Line 20
 When a websocket disconnects we can call a function which takes no
 arguments. Typically the role of this function is to notify the server
 to take an action. In this case, we print a simple message to the
 console
 
-Line 23  
+Line 23
 We use the `app.ws` decorator to mark that `/ws` is the route for our
 websocket. We also pass in the two optional `conn` and `disconn`
 parameters to this decorator. As a fun experiment, remove the `conn` and
 `disconn` arguments and see what happens
 
-Line 24  
+Line 24
 Define the `ws` function as async. This is necessary for ASGI to be able
 to serve websockets. The function accepts two arguments, a `msg` that is
 user input from the browser, and a `send` function for pushing data back
 to the browser
 
-Line 25  
+Line 25
 The `send` function is used here to send HTML back to the page. As the
 HTML has an `id` of `notifications`, HTMX will overwrite what is already
 on the page with the same ID
 
-Line 27  
+Line 27
 The websocket function can also be used to return a value. In this case,
 it is a tuple of two HTML elements. HTMX will take the elements and
 replace them where appropriate. As both have `id` specified
@@ -1182,11 +1182,11 @@ def FileMetaDataCard(file):
     return Article(
         Header(H3(file.filename)),
         Ul(
-            Li('Size: ', file.size),            
+            Li('Size: ', file.size),
             Li('Content Type: ', file.content_type),
             Li('Headers: ', file.headers),
         )
-    )    
+    )
 
 @rt
 async def upload(file: UploadFile):
@@ -1198,29 +1198,29 @@ async def upload(file: UploadFile):
 serve()
 ```
 
-Line 13  
+Line 13
 Every form rendered with the
 [`Form`](https://docs.fastht.ml/api/xtend.html#form) FT component
 defaults to `enctype="multipart/form-data"`
 
-Line 14  
+Line 14
 Don’t forget to set the `Input` FT Component’s type to `file`
 
-Line 32  
+Line 32
 The upload view should receive a [Starlette
 UploadFile](https://www.starlette.io/requests/#request-files) type. You
 can add other form variables
 
-Line 33  
+Line 33
 We can access the metadata of the card (filename, size, content_type,
 headers), a quick and safe process. We set that to the card variable
 
-Line 34  
+Line 34
 In order to access the contents contained within a file we use the
 `await` method to read() it. As files may be quite large or contain bad
 data, this is a seperate step from accessing metadata
 
-Line 35  
+Line 35
 This step shows how to use Python’s built-in `pathlib.Path` library to
 write the file to disk.
 
@@ -1251,11 +1251,11 @@ def FileMetaDataCard(file):
     return Article(
         Header(H3(file.filename)),
         Ul(
-            Li('Size: ', file.size),            
+            Li('Size: ', file.size),
             Li('Content Type: ', file.content_type),
             Li('Headers: ', file.headers),
         )
-    )    
+    )
 
 @rt
 async def upload_many(files: list[UploadFile]):
@@ -1269,33 +1269,33 @@ async def upload_many(files: list[UploadFile]):
 serve()
 ```
 
-Line 13  
+Line 13
 Every form rendered with the
 [`Form`](https://docs.fastht.ml/api/xtend.html#form) FT component
 defaults to `enctype="multipart/form-data"`
 
-Line 14  
+Line 14
 Don’t forget to set the `Input` FT Component’s type to `file` and assign
 the multiple attribute to `True`
 
-Line 32  
+Line 32
 The upload view should receive a `list` containing the [Starlette
 UploadFile](https://www.starlette.io/requests/#request-files) type. You
 can add other form variables
 
-Line 34  
+Line 34
 Iterate through the files
 
-Line 35  
+Line 35
 We can access the metadata of the card (filename, size, content_type,
 headers), a quick and safe process. We add that to the cards variable
 
-Line 36  
+Line 36
 In order to access the contents contained within a file we use the
 `await` method to read() it. As files may be quite large or contain bad
 data, this is a seperate step from accessing metadata
 
-Line 37  
+Line 37
 This step shows how to use Python’s built-in `pathlib.Path` library to
 write the file to disk.</doc><doc title="HTMX reference" desc="Brief description of all HTMX attributes, CSS classes, headers, events, extensions, js lib methods, and config options">+++
 title = "Reference"
@@ -1652,10 +1652,10 @@ Or, 🌐 via CDN: `<script src="https://cdnjs.cloudflare.com/ajax/libs/surreal/1
   * `me("body")` Gets `<body>`
   * `me(".button")` Gets the first `<div class="button">...</div>`. To get all of them use `any()`
 * Select **one or more** elements as an array: `any(...)`
-  * Like `me()` but guaranteed to return an array (or empty array). 
+  * Like `me()` but guaranteed to return an array (or empty array).
   * `any(".foo")` ⭐ Get all matching elements.
   * Convert between arrays of elements and single elements: `any(me())`, `me(any(".something"))`
- 
+
 ### 🔥 DOM Functions
 
 * ♻️ All functions work on single elements or arrays of elements.
@@ -2025,7 +2025,7 @@ See the [Live Example](https://gnat.github.io/css-scope-inline/example.html)! Th
 
 ## 🌘 How does it work?
 
-This uses `MutationObserver` to monitor the DOM, and the moment a `<style>` tag is seen, it scopes the styles to whatever the parent element is. No flashing or popping. 
+This uses `MutationObserver` to monitor the DOM, and the moment a `<style>` tag is seen, it scopes the styles to whatever the parent element is. No flashing or popping.
 
 This method also leaves your existing styles untouched, allowing you to mix and match at your leisure.
 
@@ -2214,9 +2214,9 @@ return Response(content, status_code=200, headers=headers)
 from starlette.responses import RedirectResponse
 
 async handler(request):
-    # Customize status_code: 
-    #   301: permanent redirect 
-    #   302: temporary redirect 
+    # Customize status_code:
+    #   301: permanent redirect
+    #   302: temporary redirect
     #   303: see others
     #   307: temporary redirect (default)
     return RedirectResponse(url=url, status_code=303)
@@ -2240,21 +2240,21 @@ async handler(request):
 
 ```
 {
-    'host': 'example.com:8080', 
-    'connection': 'keep-alive', 
-    'cache-control': 'max-age=0', 
-    'sec-ch-ua': 'Google Chrome 80', 
-    'dnt': '1', 
-    'upgrade-insecure-requests': '1', 
+    'host': 'example.com:8080',
+    'connection': 'keep-alive',
+    'cache-control': 'max-age=0',
+    'sec-ch-ua': 'Google Chrome 80',
+    'dnt': '1',
+    'upgrade-insecure-requests': '1',
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) ...',
-    'sec-fetch-dest': 'document', 
-    'accept': 'text/html,image/apng,*/*;q=0.8;v=b3;q=0.9', 
-    'sec-origin-policy': '0', 
-    'sec-fetch-site': 'none', 
-    'sec-fetch-mode': 'navigate', 
-    'sec-fetch-user': '?1', 
-    'accept-encoding': 'gzip, deflate, br', 
-    'accept-language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6', 
+    'sec-fetch-dest': 'document',
+    'accept': 'text/html,image/apng,*/*;q=0.8;v=b3;q=0.9',
+    'sec-origin-policy': '0',
+    'sec-fetch-site': 'none',
+    'sec-fetch-mode': 'navigate',
+    'sec-fetch-user': '?1',
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,zh-TW;q=0.6',
     'cookie': 'session=eyJhZG1pbl91c2_KiQ...'
 }
 
@@ -2279,26 +2279,26 @@ async handler(request):
 
 ```
 {
-    'type': 'http', 
-    'http_version': '1.1', 
-    'server': ('127.0.0.1', 9092), 
-    'client': ('127.0.0.1', 53102), 
-    'scheme': 'https', 
-    'method': 'GET', 
-    'root_path': '', 
-    'path': '/', 
-    'raw_path': b'/', 
-    'query_string': b'kw=hello', 
+    'type': 'http',
+    'http_version': '1.1',
+    'server': ('127.0.0.1', 9092),
+    'client': ('127.0.0.1', 53102),
+    'scheme': 'https',
+    'method': 'GET',
+    'root_path': '',
+    'path': '/',
+    'raw_path': b'/',
+    'query_string': b'kw=hello',
     'headers': [
-        (b'host', b'example.com:8080'), 
-        (b'connection', b'keep-alive'), 
-        (b'cache-control', b'max-age=0'), 
+        (b'host', b'example.com:8080'),
+        (b'connection', b'keep-alive'),
+        (b'cache-control', b'max-age=0'),
         ...
-    ], 
-    'app': <starlette.applications.Starlette object at 0x1081bd650>, 
-    'session': {'uid': '57ba03ea7333f72a25f837cf'}, 
-    'router': <starlette.routing.Router object at 0x1081bd6d0>, 
-    'endpoint': <class 'app.index.Index'>, 
+    ],
+    'app': <starlette.applications.Starlette object at 0x1081bd650>,
+    'session': {'uid': '57ba03ea7333f72a25f837cf'},
+    'router': <starlette.routing.Router object at 0x1081bd6d0>,
+    'endpoint': <class 'app.index.Index'>,
     'path_params': {}
 }
 

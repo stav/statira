@@ -24,19 +24,19 @@
     ├── [-rw-r--r-- stav     stav      261]  config.ini
     ├── [-rw-r--r-- stav     stav     132K]  llms-ctx.txt
     ├── [drwxr-xr-x stav     stav      12K]  output
-    │   ├── [drwxr-xr-x stav     stav      68K]  cache
-    │   ├── [drwxr-xr-x stav     stav     4.0K]  change
-    │   └── [drwxr-xr-x stav     stav     4.0K]  recent
+    │   ├── [drwxr-xr-x stav     stav      68K]  cache
+    │   ├── [drwxr-xr-x stav     stav     4.0K]  change
+    │   └── [drwxr-xr-x stav     stav     4.0K]  recent
     ├── [-rw-r--r-- stav     stav     2.4K]  README.md
     ├── [-rw-r--r-- stav     stav      730]  requirements.txt
     ├── [drwxr-xr-x stav     stav     4.0K]  statira
-    │   ├── [-rw-r--r-- stav     stav     7.3K]  anthem.py
-    │   ├── [-rw-r--r-- stav     stav      401]  config.py
-    │   ├── [-rw-r--r-- stav     stav     2.7K]  index.py
-    │   ├── [-rw-r--r-- stav     stav      504]  main.py
-    │   ├── [-rw-r--r-- stav     stav     3.0K]  parse.py
-    │   ├── [drwxr-xr-x stav     stav     4.0K]  static
-    │   └── [-rw-r--r-- stav     stav     1.9K]  upload.py
+    │   ├── [-rw-r--r-- stav     stav     7.3K]  anthem.py
+    │   ├── [-rw-r--r-- stav     stav      401]  config.py
+    │   ├── [-rw-r--r-- stav     stav     2.7K]  index.py
+    │   ├── [-rw-r--r-- stav     stav      504]  main.py
+    │   ├── [-rw-r--r-- stav     stav     3.0K]  parse.py
+    │   ├── [drwxr-xr-x stav     stav     4.0K]  static
+    │   └── [-rw-r--r-- stav     stav     1.9K]  upload.py
     └── [drwxr-xr-x stav     stav     4.0K]  venv
 
 #### Files
