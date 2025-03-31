@@ -12,3 +12,4 @@ config.read(config_file_path)
 BEARER_TOKEN = config["AUTH"]["BEARER_TOKEN"]
 AGENT_NAME = config["AGENT"]["NAME"]
 AGENT_TIN = config["AGENT"]["TIN"]
+PORT = int(config["CLIENT"]["PORT"])

@@ -3,6 +3,7 @@ from fasthtml.common import fast_app, serve, Link, MarkdownJS
 
 from index import page
 from upload import post
+from config import PORT
 
 dev_config = {
     "live": True,
@@ -16,7 +17,7 @@ dev_config = {
 
 app, rt = fast_app(**dev_config)
 
-serve()
+serve(port=PORT)
 
 
 @rt
