@@ -1,12 +1,19 @@
 {
   "cSpell.words": [
     "aiohttp",
+    "chardet",
+    "datas",
     "drwxr",
     "dsnp",
+    "enctype",
+    "fasthtml",
+    "hdrs",
     "idcard",
     "infile",
     "noneqiv",
+    "onchange",
     "Referer",
+    "sserver",
     "statira",
     "venv"
   ]

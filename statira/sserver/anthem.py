@@ -19,14 +19,16 @@ Functions:
     send(session, row): Sends the user data to the API and handles the response.
     main(): Main function to read the CSV file and process each row.
 """
+
 import csv
 import json
 import aiohttp
 import asyncio
 
+from io import StringIO
 from datetime import datetime, timedelta
 
-from config import BEARER_TOKEN, AGENT_NAME, AGENT_TIN
+from .config import BEARER_TOKEN, AGENT_NAME, AGENT_TIN
 
 
 url = "https://mproducer.anthem.com/mproducer/accessgateway/geteligibility"
@@ -60,7 +62,12 @@ data = {
 
 
 def missing_data(row):
-    return not (row["MBI"] and row["First Name"] and row["Last Name"] and row["DOB"])
+    return not (
+        row.get("MBI")
+        and row.get("First Name")
+        and row.get("Last Name")
+        and row.get("DOB")
+    )
 
 
 def make_cache_filename(row):
@@ -98,7 +105,6 @@ def compare_contents(response_data, recent_filename, noneqiv_filename):
 
     contents_equivalent = None
 
-    print("recent_file_contents:", type(recent_file_contents), recent_file_contents)
     if recent_file_contents:
         response_data_copy = response_data.copy()
         recent_file_contents_copy = recent_file_contents.copy()
@@ -112,8 +118,7 @@ def compare_contents(response_data, recent_filename, noneqiv_filename):
             json.dump(recent_file_contents, f, indent=4)
 
 
-async def write_response_to_file(response, row):
-    response_data = await response.json()
+async def write_response_to_file(response_data, row):
     print("response_data:", type(response_data), response_data)
 
     cache_filename = make_cache_filename(row)
@@ -161,24 +166,47 @@ def assemble_user_data(row):
 
 async def send(session, row):
     user = assemble_user_data(row)
+    response_data: str = None
 
     async with session.post(url, headers=headers, json=user) as resp:
         print(resp.status, resp.headers["content-type"])
         if resp.status == 200:
-            await write_response_to_file(resp, row)
+            response_data = await resp.json()
+            await write_response_to_file(response_data, row)
         else:
             print("Request failed", resp.reason)
 
+    return user, response_data
 
-async def main():
-    async with aiohttp.ClientSession() as session:
+
+def get_csv(content: str):
+    if content is None:
         with open("clients.csv", mode="r") as infile:
-            for row in csv.DictReader(infile):
-                print("--------------------------------")
-                if missing_data(row):
-                    print("Skipping row due to missing data:", row)
-                else:
-                    await send(session, row)
+            content = infile.read()
+
+    return StringIO(content)
+
+
+async def start(content: str = None):
+    async with aiohttp.ClientSession() as session:
+        p = r = 0
+
+        for row in csv.DictReader(get_csv(content)):
+            r += 1
+            if missing_data(row):
+                message = f"Skipping row due to missing data: {row}"
+                yield dict(message=message, user={}, data={})
+            else:
+                user, data = await send(session, row)
+                yield dict(user=user, data=data)
+                p += 1
+
+    message = f"Read {r} row{'' if r == 1 else 's'},  Processed: {p}"
+    yield dict(message=message, user={}, data={})
+
+
+async def main(content: str = None):
+    return [m async for m in start(content)]
 
 
 if __name__ == "__main__":
