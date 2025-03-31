@@ -14,10 +14,12 @@ Functions:
     make_noneqiv_filename(row): Generates a filename for storing non-equivalent response data.
     make_recent_filename(row): Generates a filename for storing the most recent response data.
     compare_contents(response_data, recent_filename, noneqiv_filename): Compares the response data with the recent file contents and writes to a non-equivalent file if they differ.
-    write_response_to_file(response, row): Writes the API response data to cache, recent, and non-equivalent files.
+    write_response_to_file(response_data, row): Writes the API response data to cache, recent, and non-equivalent files.
     assemble_user_data(row): Assembles user data from the CSV row into the required format for the API request.
     send(session, row): Sends the user data to the API and handles the response.
-    main(): Main function to read the CSV file and process each row.
+    get_csv(content): Reads CSV content from a string or a file and returns a StringIO object.
+    start(content): Uploads the CSV file, processes the content row by row, sends data to the API, and yields results.
+    main(content): Main function to run start as a script.
 """
 
 import csv
@@ -106,10 +108,14 @@ def compare_contents(response_data, recent_filename, noneqiv_filename):
     contents_equivalent = None
 
     if recent_file_contents:
+        # Make copies so we can remove unneeded entries
         response_data_copy = response_data.copy()
         recent_file_contents_copy = recent_file_contents.copy()
-        response_data_copy.pop("transId", None)
-        recent_file_contents_copy.pop("transId", None)
+        # Remove unneeded keys that change often
+        for key in ["transId", "medicaidServiceDt"]:  # Keys to remove
+            response_data_copy.pop(key, None)
+            recent_file_contents_copy.pop(key, None)
+        # Determine equivalence
         contents_equivalent = response_data_copy == recent_file_contents_copy
 
     if not contents_equivalent:
@@ -205,8 +211,8 @@ async def start(content: str = None):
     yield dict(message=message, user={}, data={})
 
 
-async def main(content: str = None):
-    return [m async for m in start(content)]
+async def main():
+    return [m async for m in start()]
 
 
 if __name__ == "__main__":

@@ -3,11 +3,12 @@ from fasthtml.common import (
     Button,
     Div,
     Form,
+    H2,
     Img,
     Input,
     Label,
     P,
-    Titled,
+    Title,
 )
 
 help = (
@@ -44,37 +45,52 @@ The CSV file should contain the following columns:
 
 def page():
 
-    return Titled(
+    return (
+        Title("Medicaid Eligibility Checker"),
         Div(
-            A(
-                Img(src="/static/favicon.ico", alt="logo", style="margin-right: 0.3em"),
-                href="/",
-            ),
-            "Medicaid Eligibility Checker",
-        ),
-        Form(
-            Input(
-                type="file",
-                name="file",
-                accept=".csv",
-                onchange="document.getElementById('results_content').innerHTML = '';",
-            ),
-            P(
-                Label(
-                    "Parse file contents:",
-                    Input(type="checkbox", name="parse", required=True, checked=True),
+            H2(
+                A(
+                    Img(
+                        src="/static/favicon.ico",
+                        alt="logo",
+                        style="margin-right: 0.3em",
+                    ),
+                    href="/",
                 ),
-                Label(
-                    "Check eligibility on Anthem:",
-                    Input(type="checkbox", name="anthem"),
-                ),
-                style="display: flex; gap: 1em;",
+                "Medicaid Eligibility Checker",
+                style="margin-bottom: 0",
             ),
-            Button("Upload", type="submit", style="margin-bottom: 0"),
-            enctype="multipart/form-data",
-            hx_post="/upload",
-            hx_target="#results_content",
+            Form(
+                Input(
+                    type="file",
+                    name="file",
+                    accept=".csv",
+                    onchange="document.getElementById('results_content').innerHTML = '';",
+                ),
+                P(
+                    Label(
+                        "Parse file contents:",
+                        Input(
+                            type="checkbox", name="parse", required=True, checked=True
+                        ),
+                    ),
+                    Label(
+                        "Check eligibility on Anthem:",
+                        Input(type="checkbox", name="anthem"),
+                    ),
+                    style="display: flex; gap: 1em;",
+                ),
+                Button(
+                    "Upload",
+                    type="submit",
+                    style="margin-bottom: 0",
+                    onchange="document.getElementById('results_content').innerHTML = 'loading...';",
+                ),
+                enctype="multipart/form-data",
+                hx_post="/upload",
+                hx_target="#results_content",
+            ),
+            Div(help, id="results_content"),
+            style="display: flex; flex-direction: column; gap: 1em; padding: 2em; max-width: 600px; margin: auto;",
         ),
-        Div(help, id="results_content"),
-        style="display: flex; flex-direction: column; gap: 1em; padding: 2em; max-width: 600px; margin: auto;",
     )
