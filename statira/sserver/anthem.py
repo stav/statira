@@ -105,7 +105,6 @@ def compare_contents(response_data, recent_filename, noneqiv_filename):
 
     contents_equivalent = None
 
-    print("recent_file_contents:", type(recent_file_contents), recent_file_contents)
     if recent_file_contents:
         response_data_copy = response_data.copy()
         recent_file_contents_copy = recent_file_contents.copy()
@@ -190,21 +189,20 @@ def get_csv(content: str):
 
 async def start(content: str = None):
     async with aiohttp.ClientSession() as session:
-        print("=" * 20)
         p = r = 0
 
         for row in csv.DictReader(get_csv(content)):
             r += 1
-            print("-" * 20, r)
             if missing_data(row):
-                print("Skipping row due to missing data:", row)
+                message = f"Skipping row due to missing data: {row}"
+                yield dict(message=message, user={}, data={})
             else:
                 user, data = await send(session, row)
-                yield user, data
+                yield dict(user=user, data=data)
                 p += 1
 
-    print("=" * 20)
-    print("Read", r, f"row{'' if r == 1 else 's'}, Processed:", p)
+    message = f"Read {r} row{'' if r == 1 else 's'},  Processed: {p}"
+    yield dict(message=message, user={}, data={})
 
 
 async def main(content: str = None):

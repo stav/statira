@@ -74,20 +74,31 @@ def parse_csv(file):
 
 
 def parse_display(datas):
-    return Div(
-        *[
+    return [
+        (
             Div(
                 H3(f"Record {i}:"),
-                Code(f"{user}"),
+                Code(f"{data['user']}"),
                 Dl(
                     *[
                         (Dt(key), Dd(Code(value)))
-                        for key, value in data.items()
+                        for key, value in data.get("data", {}).items()
                         if value
                     ]
                 ),
                 style="border: 1px solid #ccc; margin-bottom: 10px; padding: 10px; border-radius: 8px;",
             )
-            for i, (user, data) in enumerate(datas, start=1)
-        ]
+            # We only want to display records that have a user
+            if data.get("user")
+            else ""
+        )
+        for i, data in enumerate(datas, start=1)
+    ]
+
+
+def parse_message(data):
+    return Div(
+        H3("Message:"),
+        Code(data["message"]),
+        style="border: 1px solid #ccc; margin-bottom: 10px; padding: 10px; border-radius: 8px;",
     )

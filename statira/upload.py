@@ -3,7 +3,7 @@ import io
 from starlette.requests import Request
 from starlette.datastructures import UploadFile
 
-from parse import parse_csv, parse_display
+from parse import parse_csv, parse_display, parse_message
 from sserver import anthem
 
 
@@ -34,17 +34,24 @@ async def post(request: Request):
 
         if form.get("anthem"):
             process = anthem.start(content)
-            datas = [data async for data in process]
-            json_display = parse_display(datas)
-            messages.append(json_display)
+            # datas is a list of dicts from a comprehension that drains the start generator
+            datas = [p async for p in process]
+            # Messages should be displayed at the top (under the meta)
+            for data in datas:
+                if data.get("message"):
+                    messages.append(parse_message(data))
+            # parsed_datas is a list of FT objects to render for display
+            parsed_datas = parse_display(datas)
+            # Now we can add the output of the processing for each response record
+            messages.extend(parsed_datas)
 
     return messages
 
 
-sample_csv_file_contents = (
-    """\
+sample_csv_file_contents = """\
 First Name,Last Name,DOB,MBI,SSN,Medicaid
 John,Doe,01/01/1951,123456789,123-45-1111,987654321
 Jane,Doe,02/02/1952,234567891,987-65-2222,
 John,Smith,01/01/1953,345678912,,987654321
-""")
+Jane,Smith,02/02/1954,456789123,,
+"""
