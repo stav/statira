@@ -31,7 +31,7 @@ def parse_csv(file):
 
     # Analyze CSV structure
     csv_reader = csv.reader(StringIO(content))
-    headers = next(csv_reader, None)  # Extract headers
+    headers = [h.strip() for h in next(csv_reader, None)]
     sample_rows = [row for _, row in zip(range(5), csv_reader)]
     csv_reader = csv.reader(StringIO(content))  # Reset csv_reader
     line_count = sum(1 for _ in csv_reader)
