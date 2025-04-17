@@ -3,6 +3,7 @@
     "aiohttp",
     "chardet",
     "datas",
+    "devel",
     "drwxr",
     "dsnp",
     "enctype",

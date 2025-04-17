@@ -1,6 +1,31 @@
 import configparser
 import os
 
+from fasthtml.common import Link, MarkdownJS
+
+env = os.getenv("STA", "production")
+
+base_config = {
+    "hdrs": [
+        Link(rel="icon", href="/static/favicon.ico"),
+        MarkdownJS(),
+    ],
+    "static_path": "./statira",
+}
+
+dev_config = {
+    "live": True,
+    "debug": True,
+    **base_config,
+}
+
+prod_config = {
+    "live": False,
+    "debug": False,
+    **base_config,
+}
+
+fast_config = prod_config if env == "production" else dev_config
 
 file_path = os.path.abspath(__file__)
 parent_dir = os.path.dirname(file_path)

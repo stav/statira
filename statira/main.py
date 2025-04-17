@@ -1,20 +1,12 @@
 from starlette.requests import Request
-from fasthtml.common import fast_app, serve, Link, MarkdownJS
+from fasthtml.common import fast_app, serve
 
 from index import page
 from upload import post
-from config import PORT
+from config import PORT, env, fast_config
 
-dev_config = {
-    "hdrs": [
-        Link(rel="icon", href="/static/favicon.ico"),
-        MarkdownJS(),
-    ],
-    "static_path": "./statira",
-}
-
-app, rt = fast_app(**dev_config)
-
+app, rt = fast_app(**fast_config)
+print(f'Using "{env}" environment for {app} on port {PORT}')
 serve(port=PORT)
 
 

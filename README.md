@@ -88,9 +88,9 @@ When writing your code, we recommend enabling Python's [development mode][1] (py
 
     $ python -X dev statira/anthem.py
 
-## Client
+### Client
 
-    $ python statira/main.py
+    $ STA=devel python statira/main.py
 
 
 [1]: https://docs.python.org/3/library/devmode.html
