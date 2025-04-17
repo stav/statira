@@ -153,6 +153,7 @@ def assemble_user_data(row):
             "dob": dob,
         }
     )
+    # Eligibility
     if row.get("Medicaid"):
         user["medicaidId"] = row["Medicaid"].strip()
         user["eligibility"] = "dsnp"
@@ -164,6 +165,11 @@ def assemble_user_data(row):
         user["state"] = "OH"
     else:
         user["eligibility"] = "medicare"
+
+    # Effective date
+    if row.get("PED"):
+        ped = datetime.strptime(row["PED"], "%m/%d/%Y").strftime("%Y-%m-%d")
+        user["proposedEffectiveDt"] = ped
 
     print(user)
 

@@ -42,7 +42,7 @@
 #### Files
 
 - `anthem.sh`: Shell script for running the application.
-- `clients.csv`: List of clients with details such as name, DOB, MBI, SSN, and Medicaid ID.
+- `clients.csv`: List of clients with details such as name, DOB, MBI, SSN, Medicaid ID, and Effective date.
 - `config.ini`: Configuration file containing authentication and agent details.
 - `llms-ctx.txt`: Context file for language model processing.
 - `output/`: Directory for storing output files.
@@ -64,12 +64,19 @@
 ##### clients.csv
 
 ```csv
-First Name,Last Name,DOB,MBI,SSN,Medicaid
-John,Doe,01/01/1951,123456789,123-45-1111,987654321
-Jane,Doe,02/02/1952,234567891,987-65-2222,
-John,Smith,01/01/1953,345678912,,987654321
-Jane,Smith,02/02/1954,456789123,,
+First Name,Last Name,DOB,MBI,SSN,Medicaid,PED
+John,Doe,01/01/1951,123456789,123-45-1111,987654321,07/01/2025
+Jane,Doe,02/02/1952,234567891,987-65-2222,,
+John,Smith,01/01/1953,345678912,,987654321,
+Jane,Smith,02/02/1954,456789123,,,
 ```
+- `First Name`: First name of the individual
+- `Last Name`: Last name of the individual
+- `DOB`: Date of birth of the individual
+- `MBI`: Medicare Beneficiary Identifier
+- `SSN`: Social Security Number (optional)
+- `Medicaid`: Medicaid ID of the client (optional)
+- `PED`: Proposed Effective Date of a new insurance plan (optional)
 
 ##### config.ini
 
