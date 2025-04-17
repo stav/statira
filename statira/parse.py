@@ -20,8 +20,8 @@ def parse_csv(file):
     encoding = chardet.detect(preview)["encoding"] or "utf-8"
 
     # Check if we have the sample data
-    if file.filename == "sample.csv":
-        message = "Sample file fake uploaded"
+    if file.filename == "paste.csv":
+        message = "Data from text area uploaded successfully"
     else:
         message = "File uploaded successfully"
 
@@ -36,6 +36,12 @@ def parse_csv(file):
     csv_reader = csv.reader(StringIO(content))  # Reset csv_reader
     line_count = sum(1 for _ in csv_reader)
     column_count = len(headers) if headers else 0
+
+    ok = True
+    # Validate CSV content
+    if len(sample_rows) == 0:
+        message = "No data rows found in the uploaded CSV file"
+        ok = False
 
     display = Dl(
         # Close Button
@@ -76,7 +82,7 @@ def parse_csv(file):
         style="border: 1px solid #ccc; padding: 10px; border-radius: 8px; position: relative;",
     )
 
-    return content, display
+    return content, display, ok
 
 
 def parse_display(datas):

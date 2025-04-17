@@ -8,37 +8,32 @@ from fasthtml.common import (
     Input,
     Label,
     P,
+    Textarea,
     Title,
 )
 
-from upload import sample_csv_file_contents
-
 help = (
     P(
-        f"""
+        """
 This tool allows you to upload a
 <a href="https://en.wikipedia.org/wiki/Comma-separated_values" target="_blank">CSV file</a>
-containing client records.
-You can choose to parse the file contents and check eligibility on Anthem.
+from a local file on your computer or enter the data directly into the text area.
 
-If you do not select a file, you can still press the Upload button to demo the example CSV file below.
+You can choose to check eligibility on Anthem.
 
-#### Example CSV File:
-
-```csv
-{sample_csv_file_contents}
-```
-The CSV file should contain the following columns:
-- `First Name`
-- `Last Name`
-- `DOB` (Date of Birth)
-- `MBI` (Medicare Beneficiary Identifier)
-- `SSN` (Social Security Number) *[optional]*
-- `Medicaid` (Medicaid ID) *[optional]*
+If you do not select a file, you can still press the Upload button to demo the example CSV data shown above.
         """,
         cls="marked",
     ),
 )
+
+sample_csv_file_contents = """\
+First Name,Last Name,DOB,MBI,SSN,Medicaid
+John,Doe,01/01/1951,123456789,123-45-1111,987654321
+Jane,Doe,02/02/1952,234567891,987-65-2222,
+John,Smith,01/01/1953,345678912,,987654321
+Jane,Smith,02/02/1954,456789123,,
+"""
 
 
 def page():
@@ -67,16 +62,15 @@ def page():
                 ),
                 P(
                     Label(
-                        "Parse file contents:",
-                        Input(
-                            type="checkbox", name="parse", required=True, checked=True
-                        ),
-                    ),
-                    Label(
                         "Check eligibility on Anthem:",
                         Input(type="checkbox", name="anthem"),
                     ),
                     style="display: flex; gap: 1em;",
+                ),
+                Textarea(
+                    sample_csv_file_contents,
+                    name="paste",
+                    style="margin-bottom: 1em; width: 100%; min-height: 100px;",
                 ),
                 Button(
                     "Upload",
