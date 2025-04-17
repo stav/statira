@@ -8,6 +8,7 @@ from fasthtml.common import (
     Input,
     Label,
     P,
+    Script,
     Textarea,
     Title,
 )
@@ -54,11 +55,24 @@ def page():
                 style="margin-bottom: 0",
             ),
             Form(
-                Input(
-                    type="file",
-                    name="file",
-                    accept=".csv",
-                    onchange="document.getElementById('results_content').innerHTML = '';",
+                Div(
+                    Input(
+                        id="file",
+                        type="file",
+                        name="file",
+                        accept=".csv",
+                        onchange="checkInputs()",
+                        style="padding-right: 3em",
+                    ),
+                    Button(
+                        "X",
+                        cls="outline",
+                        type="button",
+                        style="position: absolute; right: 0; top: 0.4em; padding: 0.5em 1em;",
+                        title="Clear file input",
+                        onclick="document.getElementById('file').value = ''",
+                    ),
+                    style="position: relative; display: flex; gap: 1em;",
                 ),
                 P(
                     Label(
@@ -67,10 +81,23 @@ def page():
                     ),
                     style="display: flex; gap: 1em;",
                 ),
-                Textarea(
-                    sample_csv_file_contents,
-                    name="paste",
-                    style="margin-bottom: 1em; width: 100%; min-height: 100px;",
+                Div(
+                    Textarea(
+                        sample_csv_file_contents,
+                        id="paste",
+                        name="paste",
+                        style="margin-bottom: 1em; width: 100%; min-height: 100px;",
+                        onchange="checkInputs()",
+                    ),
+                    Button(
+                        "X",
+                        cls="outline",
+                        type="button",
+                        style="position: absolute; right: 0; top: 0.4em; padding: 0.5em 1em;",
+                        title="Clear text input",
+                        onclick="document.getElementById('paste').value = ''",
+                    ),
+                    style="position: relative; display: flex; gap: 1em;",
                 ),
                 Button(
                     "Upload",
@@ -84,5 +111,8 @@ def page():
             ),
             Div(help, id="results_content"),
             style="display: flex; flex-direction: column; gap: 1em; padding: 2em; max-width: 600px; margin: auto;",
+        ),
+        Script(
+            " const checkInputs = () => document.getElementById('results_content').innerHTML = '';"
         ),
     )
