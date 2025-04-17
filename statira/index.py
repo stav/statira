@@ -2,11 +2,13 @@ from fasthtml.common import (
     A,
     Button,
     Div,
+    Fieldset,
     Form,
     H2,
     Img,
     Input,
     Label,
+    Legend,
     P,
     Script,
     Textarea,
@@ -20,9 +22,8 @@ This tool allows you to upload a
 <a href="https://en.wikipedia.org/wiki/Comma-separated_values" target="_blank">CSV file</a>
 from a local file on your computer or enter the data directly into the text area.
 
-You can choose to check eligibility on Anthem.
-
-If you do not select a file, you can still press the Upload button to demo the example CSV data shown above.
+You can choose to check eligibility on Anthem by checking the box.
+Then press the Upload button to send your data to the server.
         """,
         cls="marked",
     ),
@@ -55,49 +56,53 @@ def page():
                 style="margin-bottom: 0",
             ),
             Form(
-                Div(
+                Fieldset(
+                    Legend("Upload CSV file", style="margin-bottom: 0"),
                     Input(
                         id="file",
                         type="file",
                         name="file",
                         accept=".csv",
                         onchange="checkInputs()",
-                        style="padding-right: 3em",
+                        style="padding-right: 3.5em; margin-bottom: 0",
                     ),
                     Button(
                         "X",
                         cls="outline",
                         type="button",
-                        style="position: absolute; right: 0; top: 0.4em; padding: 0.5em 1em;",
+                        style="position: absolute; right: 1em; top: 0.5em; padding: 0.5em 1em;",
                         title="Clear file input",
                         onclick="document.getElementById('file').value = ''",
                     ),
-                    style="position: relative; display: flex; gap: 1em;",
+                    style="position: relative; display: flex; gap: 1em; border: 1px solid #ccc; padding: 0.5em; border-radius: 4px;",
                 ),
-                P(
-                    Label(
-                        "Check eligibility on Anthem:",
-                        Input(type="checkbox", name="anthem"),
-                    ),
-                    style="display: flex; gap: 1em;",
-                ),
-                Div(
+                Fieldset(
+                    Legend("Paste CSV data", style="margin-bottom: 0"),
                     Textarea(
                         sample_csv_file_contents,
                         id="paste",
                         name="paste",
-                        style="margin-bottom: 1em; width: 100%; min-height: 100px;",
+                        title="Clear text input",
+                        style="margin-bottom: 0; width: 100%; min-height: 100px;",
                         onchange="checkInputs()",
                     ),
                     Button(
                         "X",
                         cls="outline",
                         type="button",
-                        style="position: absolute; right: 0; top: 0.4em; padding: 0.5em 1em;",
+                        style="position: absolute; right: 1em; top: 0.4em; padding: 0.5em 1em;",
                         title="Clear text input",
                         onclick="document.getElementById('paste').value = ''",
                     ),
-                    style="position: relative; display: flex; gap: 1em;",
+                    style="position: relative; display: flex; gap: 1em; border: 1px solid #ccc; padding: 0.5em; border-radius: 4px;",
+                ),
+                Fieldset(
+                    Legend("Check eligibility", style="margin-bottom: 0"),
+                    Label(
+                        "Anthem:",
+                        Input(type="checkbox", name="anthem"),
+                    ),
+                    style="display: flex; gap: 1em; border: 1px solid #ccc; padding: 0.5em; border-radius: 4px;",
                 ),
                 Button(
                     "Upload",
