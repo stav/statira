@@ -29,18 +29,28 @@ def parse_csv(file):
     file.file.seek(0)
     content: str = file.file.read().decode(encoding, errors="replace")
 
+    def csv_reader():
+        return csv.reader(StringIO(content))
+
     # Analyze CSV structure
-    csv_reader = csv.reader(StringIO(content))
-    headers = [h.strip() for h in next(csv_reader, None)]
-    sample_rows = [row for _, row in zip(range(5), csv_reader)]
-    csv_reader = csv.reader(StringIO(content))  # Reset csv_reader
-    line_count = sum(1 for _ in csv_reader)
+    reader = csv_reader()
+    headers = [h.strip() for h in next(reader, None)]
+    sample_rows = [row for _, row in zip(range(5), reader) if row]
+    line_count = sum(1 for _ in csv_reader())
+    row_count = sum(1 for r in csv_reader() if r)
     column_count = len(headers) if headers else 0
+
+    def rows_with_wrong_cols():
+        rows = (r for r in csv_reader() if r)
+        return [True for row in rows if len(row) != column_count]
 
     ok = True
     # Validate CSV content
     if len(sample_rows) == 0:
         message = "No data rows found in the uploaded CSV file"
+        ok = False
+    elif rows_with_wrong_cols():
+        message = "Inconsistent number of columns in the uploaded CSV file"
         ok = False
 
     display = Dl(
@@ -66,6 +76,9 @@ def parse_csv(file):
         # Line Count
         Dt("Total Lines:"),
         Dd(Code(line_count)),
+        # Row Count of lines with data
+        Dt("Row Count of lines with data:"),
+        Dd(Code(row_count)),
         # Column Count
         Dt("Number of Columns:"),
         Dd(Code(column_count)),
