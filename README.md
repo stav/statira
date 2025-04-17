@@ -80,17 +80,18 @@ BEARER_TOKEN = ey...
 [AGENT]
 NAME = Steven Almeroth
 TIN = ..........
+
+[CLIENT]
+PORT = 7001
 ```
 
 ## Development
 
 When writing your code, we recommend enabling Python's [development mode][1] (python -X dev).
 
-    $ python -X dev statira/anthem.py
-
 ### Client
 
-    $ STA=devel python statira/main.py
+    $ STA=devel python -X dev statira/main.py
 
 
 [1]: https://docs.python.org/3/library/devmode.html
