@@ -19,6 +19,12 @@ def parse_csv(file):
     preview = file.file.read(1000)  # Read a sample for encoding detection
     encoding = chardet.detect(preview)["encoding"] or "utf-8"
 
+    # Check if we have the sample data
+    if file.filename == "sample.csv":
+        message = "Sample file fake uploaded"
+    else:
+        message = "File uploaded successfully"
+
     # Reset file pointer and read content
     file.file.seek(0)
     content: str = file.file.read().decode(encoding, errors="replace")
@@ -40,7 +46,7 @@ def parse_csv(file):
             onclick="this.parentElement.outerHTML = '';",
         ),
         # Name
-        Dt("File uploaded successfully:"),
+        Dt(f"{message}:"),
         Dd(Code(file.filename)),
         # Type
         Dt("Content type:"),
@@ -92,6 +98,7 @@ def parse_display(datas):
             if data.get("user")
             else ""
         )
+        # This is the comprehension that drains the start generator
         for i, data in enumerate(datas, start=1)
     ]
 

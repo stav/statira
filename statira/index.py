@@ -11,9 +11,11 @@ from fasthtml.common import (
     Title,
 )
 
+from upload import sample_csv_file_contents
+
 help = (
     P(
-        """
+        f"""
 This tool allows you to upload a
 <a href="https://en.wikipedia.org/wiki/Comma-separated_values" target="_blank">CSV file</a>
 containing client records.
@@ -24,11 +26,7 @@ If you do not select a file, you can still press the Upload button to demo the e
 #### Example CSV File:
 
 ```csv
-First Name,Last Name,DOB,MBI,SSN,Medicaid
-John,Doe,01/01/1951,123456789,123-45-1111,987654321
-Jane,Doe,02/02/1952,234567891,987-65-2222,
-John,Smith,01/01/1953,345678912,,987654321
-Jane,Smith,02/02/1954,456789123,,
+{sample_csv_file_contents}
 ```
 The CSV file should contain the following columns:
 - `First Name`
