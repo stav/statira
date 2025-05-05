@@ -33,7 +33,9 @@ async def post(request: Request):
 
     # Validate the inputs
     if form.get("file") and paste:
-        data = dict(message="Pasted data ignored. Clear file input to upload pasted data.")
+        data = dict(
+            message="Pasted data ignored. Clear file input to upload pasted data."
+        )
         messages.append(parse_message(data))
         ok = False
     if file.content_type != "text/csv":
@@ -69,3 +71,11 @@ async def post(request: Request):
         messages.extend(parsed_datas)
 
     return messages
+
+
+sample_csv_file_contents = """\
+First Name,Last Name,DOB,MBI,SSN,Medicaid
+John,Doe,01/01/1951,123456789,123-45-1111,987654321
+Jane,Doe,02/02/1952,234567891,987-65-2222,
+John,Smith,01/01/1953,345678912,,987654321
+"""

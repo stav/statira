@@ -2,40 +2,32 @@ from fasthtml.common import (
     A,
     Button,
     Div,
-    Fieldset,
     Form,
     H2,
     Img,
     Input,
     Label,
-    Legend,
     P,
-    Script,
     Textarea,
     Title,
 )
 
+from upload import sample_csv_file_contents
+
 help = (
     P(
-        """
+        f"""
 This tool allows you to upload a
 <a href="https://en.wikipedia.org/wiki/Comma-separated_values" target="_blank">CSV file</a>
 from a local file on your computer or enter the data directly into the text area.
 
-You can choose to check eligibility on Anthem by checking the box.
-Then press the Upload button to send your data to the server.
+You can choose to check eligibility on Anthem. Or you can enter the data in the text area.
+
+If you do not select a file, you can still press the Upload button to demo the example CSV data shown above.
         """,
         cls="marked",
     ),
 )
-
-sample_csv_file_contents = """\
-First Name,Last Name,DOB,MBI,SSN,Medicaid
-John,Doe,01/01/1951,123456789,123-45-1111,987654321
-Jane,Doe,02/02/1952,234567891,987-65-2222,
-John,Smith,01/01/1953,345678912,,987654321
-Jane,Smith,02/02/1954,456789123,,
-"""
 
 
 def page():
@@ -56,53 +48,37 @@ def page():
                 style="margin-bottom: 0",
             ),
             Form(
-                Fieldset(
-                    Legend("Upload CSV file", style="margin-bottom: 0"),
-                    Input(
-                        id="file",
-                        type="file",
-                        name="file",
-                        accept=".csv",
-                        onchange="checkInputs()",
-                        style="padding-right: 3.5em; margin-bottom: 0",
-                    ),
-                    Button(
-                        "X",
-                        cls="outline",
-                        type="button",
-                        style="position: absolute; right: 1em; top: 0.5em; padding: 0.5em 1em;",
-                        title="Clear file input",
-                        onclick="document.getElementById('file').value = ''",
-                    ),
-                    style="position: relative; display: flex; gap: 1em; border: 1px solid #ccc; padding: 0.5em; border-radius: 4px;",
+                Input(
+                    type="file",
+                    name="file",
+                    accept=".csv",
+                    onchange="document.getElementById('results_content').innerHTML = '';",
                 ),
-                Fieldset(
-                    Legend("Paste CSV data", style="margin-bottom: 0"),
-                    Textarea(
-                        sample_csv_file_contents,
-                        id="paste",
-                        name="paste",
-                        title="Clear text input",
-                        style="margin-bottom: 0; width: 100%; min-height: 100px;",
-                        onchange="checkInputs()",
-                    ),
+                P(
                     Button(
-                        "X",
-                        cls="outline",
+                        "Load Sample Data",
                         type="button",
-                        style="position: absolute; right: 1em; top: 0.4em; padding: 0.5em 1em;",
-                        title="Clear text input",
-                        onclick="document.getElementById('paste').value = ''",
+                        onclick="document.querySelector('textarea[name=\"paste\"]').value = `"
+                        + sample_csv_file_contents.replace("`", "\\`")
+                        + "`;",
+                        style="margin-bottom: 1em;",
                     ),
-                    style="position: relative; display: flex; gap: 1em; border: 1px solid #ccc; padding: 0.5em; border-radius: 4px;",
-                ),
-                Fieldset(
-                    Legend("Check eligibility", style="margin-bottom: 0"),
                     Label(
-                        "Anthem:",
+                        "Parse file contents:",
+                        Input(
+                            type="checkbox", name="parse", required=True, checked=True
+                        ),
+                    ),
+                    Label(
+                        "Check eligibility on Anthem:",
                         Input(type="checkbox", name="anthem"),
                     ),
-                    style="display: flex; gap: 1em; border: 1px solid #ccc; padding: 0.5em; border-radius: 4px;",
+                    style="display: flex; gap: 1em;",
+                ),
+                Textarea(
+                    name="paste",
+                    placeholder=sample_csv_file_contents,
+                    style="margin-bottom: 1em; width: 100%; min-height: 100px;",
                 ),
                 Button(
                     "Upload",
@@ -116,8 +92,5 @@ def page():
             ),
             Div(help, id="results_content"),
             style="display: flex; flex-direction: column; gap: 1em; padding: 2em; max-width: 600px; margin: auto;",
-        ),
-        Script(
-            " const checkInputs = () => document.getElementById('results_content').innerHTML = '';"
         ),
     )
