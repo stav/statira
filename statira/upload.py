@@ -1,7 +1,7 @@
 import io
 
 from starlette.requests import Request
-from starlette.datastructures import UploadFile
+from starlette.datastructures import UploadFile, Headers
 
 from anthem import start
 from parse import parse_csv, parse_display, parse_message
@@ -14,8 +14,18 @@ async def post(request: Request):
     file = form.get("file")
     paste = form.get("paste")
     anthem = form.get("anthem")
+
+    # Warn if both file and paste are provided
+    if file and paste:
+        data = dict(
+            message="Pasted data ignored. Clear file input to upload pasted data."
+        )
+        messages.append(parse_message(data))
+        ok = False
+
+    # Check if pasted data from the textarea is provided
+    # If not, create a fake UploadFile object from the pasted data
     if not file:
-        # Check if pasted data from the textarea is provided
         if not paste:
             # No data whatsoever provided
             return "No data provided. Please upload a CSV file."
@@ -23,33 +33,34 @@ async def post(request: Request):
             # Create a fake UploadFile object from the pasted data
             file = UploadFile(
                 filename="paste.csv",
-                headers={"content-type": "text/csv"},
-                file=io.BytesIO(paste.encode("utf-8")),
-                size=len(paste),
+                headers=Headers({"content-type": "text/csv"}),
+                file=io.BytesIO(str(paste).encode("utf-8")),
+                size=len(str(paste)),
             )
 
-    # Parse the data
+    # Parse and validate the contents of the file
     content, display, ok = parse_csv(file)
 
-    # Validate the inputs
-    if form.get("file") and paste:
-        data = dict(
-            message="Pasted data ignored. Clear file input to upload pasted data."
-        )
-        messages.append(parse_message(data))
-        ok = False
-    if file.content_type != "text/csv":
-        data = dict(message="Invalid content type. Only CSV files are allowed.")
-        messages.append(parse_message(data))
-        ok = False
-    if file.size > 10 * 1024 * 1024:
-        data = dict(message="File is too large. Maximum size is 10 MB.")
-        messages.append(parse_message(data))
-        ok = False
-    if file.size == 0:
-        data = dict(message="File is empty.")
-        messages.append(parse_message(data))
-        ok = False
+    # More validation
+    if isinstance(file, UploadFile):
+
+        if file.content_type != "text/csv":
+            data = dict(message="Invalid content type. Only CSV files are allowed.")
+            messages.append(parse_message(data))
+            ok = False
+
+        if file.size is not None:
+
+            if file.size == 0:
+                data = dict(message="File is empty.")
+                messages.append(parse_message(data))
+                ok = False
+
+            if file.size > 10 * 1024 * 1024:
+                data = dict(message="File is too large. Maximum size is 10 MB.")
+                messages.append(parse_message(data))
+                ok = False
+
     if anthem and not ok:
         data = dict(message="Data not sent to Anthem because it requires valid CSV.")
         messages.append(parse_message(data))

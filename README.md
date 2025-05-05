@@ -1,5 +1,9 @@
 # README
 
+This package provides functionality to check Medicare and Medicaid eligibility
+for users via the Anthem API. It reads CSV user data input, formats it, sends 
+it to the API, and handles the response.
+
 ## Install
 
 ### Clone
@@ -94,11 +98,24 @@ PORT = 7001
 
 ## Development
 
-When writing your code, we recommend enabling Python's [development mode][1] (python -X dev).
+Make sure you have the virtual environment sourced:
 
-### Client
+    source venv/bin/activate
+
+### Client User Interface
+
+When writing your code, we recommend enabling Python's [development mode][1] 
+(python -X dev).
 
     $ STA=devel python -X dev statira/main.py
+
+### Anthem
+
+If you want to run the Anthem script witout using the client interface
+it will look in the root of the project for a file called `clients.csv`
+(See above):
+
+    $ python statira/anthem.py
 
 
 [1]: https://docs.python.org/3/library/devmode.html

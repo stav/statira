@@ -178,7 +178,7 @@ def assemble_user_data(row):
 
 async def send(session, row):
     user = assemble_user_data(row)
-    response_data: str = None
+    response_data: str | None = None
 
     async with session.post(url, headers=headers, json=user) as resp:
         print(resp.status, resp.headers["content-type"])
@@ -192,14 +192,14 @@ async def send(session, row):
 
 
 def get_csv(content: str):
-    if content is None:
+    if not content:
         with open("clients.csv", mode="r") as infile:
             content = infile.read()
 
     return StringIO(content)
 
 
-async def start(content: str = None):
+async def start(content: str):
     async with aiohttp.ClientSession() as session:
         p = r = 0
 
@@ -218,7 +218,7 @@ async def start(content: str = None):
 
 
 async def main():
-    return [m async for m in start()]
+    return [m async for m in start("")]
 
 
 if __name__ == "__main__":

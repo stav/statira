@@ -14,19 +14,14 @@ from fasthtml.common import (
 
 from upload import sample_csv_file_contents
 
-help = (
-    P(
-        f"""
+help = P(
+    """
 This tool allows you to upload a
 <a href="https://en.wikipedia.org/wiki/Comma-separated_values" target="_blank">CSV file</a>
 from a local file on your computer or enter the data directly into the text area.
-
-You can choose to check eligibility on Anthem. Or you can enter the data in the text area.
-
-If you do not select a file, you can still press the Upload button to demo the example CSV data shown above.
-        """,
-        cls="marked",
-    ),
+Check the box to verify eligibility using Anthem.
+""",
+    cls="marked",
 )
 
 

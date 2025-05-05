@@ -34,7 +34,7 @@ def parse_csv(file):
 
     # Analyze CSV structure
     reader = csv_reader()
-    headers = [h.strip() for h in next(reader, None)]
+    headers = [h.strip() for h in next(reader, None) or []]
     sample_rows = [row for _, row in zip(range(5), reader) if row]
     line_count = sum(1 for _ in csv_reader())
     row_count = sum(1 for r in csv_reader() if r)
@@ -102,14 +102,26 @@ def parse_display(datas):
     return [
         (
             Div(
-                H3(f"Record {i}:"),
-                Code(f"{data['user']}"),
-                Dl(
-                    *[
-                        (Dt(key), Dd(Code(value)))
-                        for key, value in data.get("data", {}).items()
-                        if value
-                    ]
+                H3(f"Record {i}: {data['user']['firstName']} {data['user']['lastName']}"),
+                Div(
+                    # Left column - user data
+                    Dl(
+                        *[
+                            (Dt(key), Dd(Code(value)))
+                            for key, value in data["user"].items()
+                        ],
+                        style="flex: 1; margin-right: 10px;",
+                    ),
+                    # Right column - data items
+                    Dl(
+                        *[
+                            (Dt(key), Dd(Code(value)))
+                            for key, value in data.get("data", {}).items()
+                            if value
+                        ],
+                        style="flex: 1;",
+                    ),
+                    style="display: flex;",
                 ),
                 style="border: 1px solid #ccc; margin-bottom: 10px; padding: 10px; border-radius: 8px;",
             )
