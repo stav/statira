@@ -117,5 +117,9 @@ it will look in the root of the project for a file called `clients.csv`
 
     $ python statira/anthem.py
 
+## Production
+
+    pm2 start ecosystem.config.cjs
+
 
 [1]: https://docs.python.org/3/library/devmode.html
