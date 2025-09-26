@@ -10,6 +10,7 @@ beautifulsoup4==4.13.3
 Brotli==1.1.0
 certifi==2025.1.31
 cffi==1.17.1
+chardet==5.2.0
 click==8.1.8
 fastcore==1.8.0
 fastlite==0.1.2
