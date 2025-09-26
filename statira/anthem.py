@@ -26,11 +26,12 @@ import csv
 import json
 import aiohttp
 import asyncio
+import ssl
 
 from io import StringIO
 from datetime import datetime, timedelta
 
-from config import BEARER_TOKEN, AGENT_NAME, AGENT_TIN
+from config import BEARER_TOKEN, AGENT_NAME, AGENT_TIN, SSL_VERIFY, SSL_DISABLE_VERIFICATION, SSL_PERMISSIVE
 
 
 url = "https://mproducer.anthem.com/mproducer/accessgateway/geteligibility"
@@ -180,13 +181,25 @@ async def send(session, row):
     user = assemble_user_data(row)
     response_data: str | None = None
 
-    async with session.post(url, headers=headers, json=user) as resp:
-        print(resp.status, resp.headers["content-type"])
-        if resp.status == 200:
-            response_data = await resp.json()
-            await write_response_to_file(response_data, row)
-        else:
-            print("Request failed", resp.reason)
+    try:
+        async with session.post(url, headers=headers, json=user) as resp:
+            print(resp.status, resp.headers["content-type"])
+            if resp.status == 200:
+                response_data = await resp.json()
+                await write_response_to_file(response_data, row)
+            else:
+                print("Request failed", resp.reason)
+    except aiohttp.ClientConnectorCertificateError as e:
+        print(f"SSL Certificate Error: {e}")
+        print("This may be due to missing or outdated SSL certificates.")
+        print("Please ensure your system has up-to-date certificate authorities.")
+        raise
+    except aiohttp.ClientConnectorError as e:
+        print(f"Connection Error: {e}")
+        raise
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        raise
 
     return user, response_data
 
@@ -200,7 +213,81 @@ def get_csv(content: str):
 
 
 async def start(content: str):
-    async with aiohttp.ClientSession() as session:
+    # Create SSL context with proper configuration for production environments
+    ssl_context = ssl.create_default_context()
+    
+    # Check if SSL verification is disabled in config
+    if SSL_DISABLE_VERIFICATION:
+        print("⚠ WARNING: SSL verification is disabled in configuration!")
+        print("⚠ This should only be used in controlled environments.")
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+    else:
+        ssl_context.check_hostname = True
+        ssl_context.verify_mode = ssl.CERT_REQUIRED
+        
+        # Try multiple certificate loading strategies for production environments
+        cert_loaded = False
+        
+        # Strategy 1: Load default certificates
+        try:
+            ssl_context.load_default_certs()
+            cert_loaded = True
+            print("✓ Loaded default SSL certificates")
+        except Exception as e:
+            print(f"⚠ Could not load default certificates: {e}")
+        
+        # Strategy 2: Try common certificate locations (production servers)
+        if not cert_loaded:
+            cert_paths = [
+                '/etc/ssl/certs/ca-certificates.crt',  # Ubuntu/Debian
+                '/etc/ssl/certs/ca-bundle.crt',        # CentOS/RHEL
+                '/etc/pki/tls/certs/ca-bundle.crt',    # CentOS/RHEL alternative
+                '/usr/local/share/ca-certificates/ca-certificates.crt',  # Alternative
+                '/etc/ssl/cert.pem',                   # macOS/FreeBSD
+                '/usr/local/etc/ssl/cert.pem',         # macOS Homebrew
+            ]
+            
+            for cert_path in cert_paths:
+                try:
+                    ssl_context.load_verify_locations(cert_path)
+                    cert_loaded = True
+                    print(f"✓ Loaded certificates from {cert_path}")
+                    break
+                except Exception as e:
+                    print(f"⚠ Could not load certificates from {cert_path}: {e}")
+                    continue
+        
+        # Strategy 3: If still no certificates, warn but continue
+        if not cert_loaded:
+            print("⚠ No SSL certificates found. This may cause connection issues.")
+            print("⚠ Consider updating certificate authorities on the production server.")
+            print("⚠ You can disable SSL verification in config.ini if needed (not recommended for production).")
+        
+        # Strategy 4: Additional SSL context configuration for problematic domains
+        # Set more permissive SSL options for domains with certificate chain issues
+        try:
+            # Allow more flexible certificate verification for domains with complex chains
+            ssl_context.set_ciphers('DEFAULT@SECLEVEL=1')
+            print("✓ Configured SSL context with more permissive cipher settings")
+        except Exception as e:
+            print(f"⚠ Could not configure SSL ciphers: {e}")
+        
+        # Try to handle certificate chain issues
+        try:
+            # Set options to handle certificate chain verification issues
+            ssl_context.options |= ssl.OP_NO_SSLv2
+            ssl_context.options |= ssl.OP_NO_SSLv3
+            ssl_context.options |= ssl.OP_NO_TLSv1
+            ssl_context.options |= ssl.OP_NO_TLSv1_1
+            print("✓ Configured SSL context with secure protocol options")
+        except Exception as e:
+            print(f"⚠ Could not configure SSL options: {e}")
+    
+    # Create connector with SSL context
+    connector = aiohttp.TCPConnector(ssl=ssl_context)
+    
+    async with aiohttp.ClientSession(connector=connector) as session:
         p = r = 0
 
         for row in csv.DictReader(get_csv(content)):

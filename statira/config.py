@@ -38,3 +38,8 @@ BEARER_TOKEN = config["AUTH"]["BEARER_TOKEN"]
 AGENT_NAME = config["AGENT"]["NAME"]
 AGENT_TIN = config["AGENT"]["TIN"]
 PORT = int(config["CLIENT"]["PORT"])
+
+# SSL Configuration
+SSL_VERIFY = config.getboolean("SSL", "VERIFY", fallback=True)
+SSL_DISABLE_VERIFICATION = config.getboolean("SSL", "DISABLE_VERIFICATION", fallback=False)
+SSL_PERMISSIVE = config.getboolean("SSL", "PERMISSIVE_SSL", fallback=True)
